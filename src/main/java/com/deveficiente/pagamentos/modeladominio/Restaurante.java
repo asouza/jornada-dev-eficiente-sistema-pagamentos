@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -21,11 +22,20 @@ public class Restaurante {
 	private @NotBlank String nome;
 	@ElementCollection
 	private @Size(min = 1) Set<FormaPagamento> formasPagamento = new HashSet<>();
+	
+	@Deprecated
+	public Restaurante() {
+
+	}
 
 	public Restaurante(@NotBlank String nome,
 			@Size(min = 1) FormaPagamento... formasPagamento) {
 		this.nome = nome;
 		Stream.of(formasPagamento).forEach(this.formasPagamento :: add);
+	}
+	
+	public boolean aceita(@NotNull FormaPagamento formaPagamento) {
+		return this.formasPagamento.contains(formaPagamento);
 	}
 
 }

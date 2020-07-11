@@ -14,4 +14,8 @@ public enum FormaPagamento {
 		this.online = online;
 		this.descricao = descricao;
 	}
+
+	public String getDescricao() {
+		return descricao;
+	}
 }
