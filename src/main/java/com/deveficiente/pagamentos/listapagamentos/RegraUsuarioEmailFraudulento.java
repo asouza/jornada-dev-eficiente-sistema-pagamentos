@@ -15,16 +15,6 @@ import com.deveficiente.pagamentos.modeladominio.Usuario;
 public class RegraUsuarioEmailFraudulento implements RegraFraude {
 	
 	private Set<String> emailsBloqueados = Set.of("shun@deveficiente.com");
-	
-	private FraudeRepository fraudeRepository;
-	
-	
-	public RegraUsuarioEmailFraudulento(FraudeRepository fraudeRepository) {
-		super();
-		this.fraudeRepository = fraudeRepository;
-	}
-
-
 
 	/**
 	 * 
@@ -40,9 +30,7 @@ public class RegraUsuarioEmailFraudulento implements RegraFraude {
 			return true;
 		}
 		
-		Optional<Fraude> possivelFraude = fraudeRepository.findByEmail(usuario.getEmail());
-		
-		return formaPagamento.online && possivelFraude.isEmpty();
+		return formaPagamento.online && !emailsBloqueados.contains(usuario.getEmail());
 	}
 
 }
