@@ -1,5 +1,6 @@
 package com.deveficiente.pagamentos.modeladominio;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,10 +15,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import org.springframework.util.Assert;
+
+import com.deveficiente.pagamentos.listapagamentos.RegraFraude;
 
 @Entity
 public class Usuario {
@@ -30,8 +32,9 @@ public class Usuario {
 	private String email;
 	@Size(min = 1)
 	@ElementCollection
+	//1
 	private Set<FormaPagamento> formasPagamento = new HashSet<>();
-	
+
 	@Deprecated
 	public Usuario() {
 
@@ -46,13 +49,26 @@ public class Usuario {
 				"Precisa de pelo menos uma forma de pagamento");
 
 		this.email = email;
+		//
 		Stream.of(formasPagamento).forEach(this.formasPagamento::add);
 	}
 
 	public Set<FormaPagamento> filtraFormasPagamento(
-			@NotNull @Valid Restaurante restaurante) {
-		return this.formasPagamento.stream().filter(restaurante::aceita)
-				.collect(Collectors.toSet());
+			@NotNull @Valid Restaurante restaurante,
+			Collection<RegraFraude> regrasFraude) {
+		return this.formasPagamento.stream()
+				//1
+				.filter(restaurante::aceita)
+				//1
+				.filter(formaPagamento -> {
+					//1
+					return regrasFraude.stream().allMatch(
+							regra -> regra.aceita(formaPagamento, this));
+				}).collect(Collectors.toSet());
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 }

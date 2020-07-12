@@ -7,7 +7,7 @@ public enum FormaPagamento {
 	maquineta(false, "maquina para passar cartao"),
 	dinheiro(false, "dinheiro para pagar o pedidod");
 
-	private boolean online;
+	public final boolean online;
 	private String descricao;
 
 	FormaPagamento(boolean online, String descricao) {
