@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,14 +16,15 @@ public class EndointsExternos {
 	
 	private AtomicInteger ids = new AtomicInteger();
 
-	@GetMapping("/api/pedidos/{idPedido}/valor")
-	public Map<String, Object> valorPedido(Long idPedido) {
+	@GetMapping("/api/pedidos/{idPedido}")
+	public Map<String, Object> valorPedido(@PathVariable("idPedido") Long idPedido) {
 		if(ids.getAndIncrement() % 3 == 0) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 		
 		String[] valores = new String[]{"50.00", "150.00","60","200"};
 		int posicao = new Random().nextInt(4);
+		
 		return Map.of("valor",new BigDecimal(valores[posicao])); 
 	}
 }

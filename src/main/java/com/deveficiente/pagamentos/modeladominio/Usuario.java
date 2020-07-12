@@ -2,6 +2,7 @@ package com.deveficiente.pagamentos.modeladominio;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ public class Usuario {
 	private String email;
 	@Size(min = 1)
 	@ElementCollection
-	//1
+	// 1
 	private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
 	@Deprecated
@@ -57,11 +58,11 @@ public class Usuario {
 			@NotNull @Valid Restaurante restaurante,
 			Collection<RegraFraude> regrasFraude) {
 		return this.formasPagamento.stream()
-				//1
+				// 1
 				.filter(restaurante::aceita)
-				//1
+				// 1
 				.filter(formaPagamento -> {
-					//1
+					// 1
 					return regrasFraude.stream().allMatch(
 							regra -> regra.aceita(formaPagamento, this));
 				}).collect(Collectors.toSet());
@@ -69,6 +70,13 @@ public class Usuario {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public boolean podePagar(Restaurante restaurante,
+			FormaPagamento formaPagamento,
+			Collection<RegraFraude> regrasFraude) {
+		return filtraFormasPagamento(restaurante, regrasFraude)
+				.contains(formaPagamento);
 	}
 
 }
