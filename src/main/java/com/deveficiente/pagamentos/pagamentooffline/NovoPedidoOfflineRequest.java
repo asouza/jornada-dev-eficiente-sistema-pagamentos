@@ -45,11 +45,11 @@ public class NovoPedidoOfflineRequest {
 		return !formaPagamento.online;
 	}
 
-	public Transacao toTransacao(Long idPedido,BigDecimal valor,EntityManager manager) {
+	public Transacao toTransacao(BigDecimal valor,EntityManager manager) {
 		Usuario usuario = manager.find(Usuario.class, idUsuario);		
 		Restaurante restaurante = manager.find(Restaurante.class, idRestaurante);
 		
-		return new Transacao(idPedido,valor,usuario,restaurante,StatusTransacao.esperando_confirmacao_pagamento);
+		return new Transacao(valor,usuario,restaurante,StatusTransacao.esperando_confirmacao_pagamento);
 	}
 
 }

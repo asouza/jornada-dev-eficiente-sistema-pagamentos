@@ -8,7 +8,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,8 +53,8 @@ public class PagamentoOfflineController {
 		
 		//2
 		return executaTransacao.executa(() -> {
-			Transacao novaTransacaoOffline = request.toTransacao(idPedido,valor,manager);
-			manager.persist(novaTransacaoOffline);
+			Transacao novaTransacaoOffline = request.toTransacao(valor,manager);
+			manager.persist(new Pagamento(idPedido,novaTransacaoOffline));
 			return novaTransacaoOffline.getUuid();
 		});
 
