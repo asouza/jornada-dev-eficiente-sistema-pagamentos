@@ -11,6 +11,8 @@ public class NovoPedidoOfflineRequestValidator implements Validator {
 	@Autowired
 	// 1
 	private CombinacaoRestauranteUsuarioFormaPagamentoValidator combinacaoRestauranteUsuarioFormaPagamentoValidator;
+	@Autowired
+	private PagamentoGeradoValidator pagamentoGeradoValidator;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -25,6 +27,7 @@ public class NovoPedidoOfflineRequestValidator implements Validator {
 
 		combinacaoRestauranteUsuarioFormaPagamentoValidator.validate(target,
 				errors);
+		pagamentoGeradoValidator.validate(target, errors);
 		new FormaPagamentoOfflineValidator().validate(target, errors);
 
 	}

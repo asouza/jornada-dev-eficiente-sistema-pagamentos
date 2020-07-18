@@ -51,7 +51,7 @@ public class PagamentoOfflineController {
 			return bindException;
 		});
 		
-		//2
+		//3
 		return executaTransacao.executa(() -> {
 			Transacao novaTransacaoOffline = request.toTransacao(valor,manager);
 			manager.persist(new Pagamento(idPedido,novaTransacaoOffline));

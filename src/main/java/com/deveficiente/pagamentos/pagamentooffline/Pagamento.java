@@ -20,6 +20,11 @@ public class Pagamento {
 	@ElementCollection
 	private Set<Transacao> transacoes = new HashSet<>();
 	private @NotNull Long idPedido;
+	
+	@Deprecated
+	public Pagamento() {
+
+	}
 
 	public Pagamento(@NotNull Long idPedido,@NotNull @Valid Transacao transacao) {
 		this.idPedido = idPedido;
