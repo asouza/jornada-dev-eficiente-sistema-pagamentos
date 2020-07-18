@@ -18,10 +18,15 @@ import com.deveficiente.pagamentos.modeladominio.Usuario;
 public class CombinacaoRestauranteUsuarioFormaPagamentoValidator
 		implements Validator {
 
-	@PersistenceContext
 	private EntityManager manager;
-	@Autowired
 	private Collection<RegraFraude> regrasFraude;
+
+	public CombinacaoRestauranteUsuarioFormaPagamentoValidator(
+			EntityManager manager, Collection<RegraFraude> regrasFraude) {
+		super();
+		this.manager = manager;
+		this.regrasFraude = regrasFraude;
+	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
