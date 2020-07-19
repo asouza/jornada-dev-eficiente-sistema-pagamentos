@@ -7,16 +7,24 @@ import javax.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
+import com.deveficiente.pagamentos.outrossistemas.PodeMeDeixarCaoticoInterceptor;
 
 @SpringBootApplication
-public class DesafioSistemaPagamentosApplication implements CommandLineRunner {
+public class DesafioSistemaPagamentosApplication implements CommandLineRunner,WebMvcConfigurer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DesafioSistemaPagamentosApplication.class, args);
+	}
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new PodeMeDeixarCaoticoInterceptor());
 	}
 
 	@PersistenceContext
