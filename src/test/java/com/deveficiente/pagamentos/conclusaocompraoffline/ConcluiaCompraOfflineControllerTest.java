@@ -35,6 +35,7 @@ public class ConcluiaCompraOfflineControllerTest {
 				.thenReturn(Optional.empty());
 		try {
 			controller.conclui("123456");
+			Assertions.fail();
 		} catch (ResponseStatusException e) {
 			Assertions.assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
 		}
@@ -45,12 +46,12 @@ public class ConcluiaCompraOfflineControllerTest {
 	void teste2() throws Exception {
 
 		pagamento.conclui();
-
 		Mockito.when(pagamentoRepository.findByCodigo("1234567"))
 				.thenReturn(Optional.of(pagamento));
 
-		try {
+		try {			
 			controller.conclui("1234567");
+			Assertions.fail();
 		} catch (ResponseStatusException e) {
 			Assertions.assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
 		}
