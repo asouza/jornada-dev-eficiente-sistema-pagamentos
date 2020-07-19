@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface PagamentoRepository extends org.springframework.data.repository.Repository<Pagamento, Long>{
 
 	public Optional<Pagamento> findByIdPedido(Long idPedido);
+
+	public Optional<Pagamento> findByCodigo(String codigoPagamento);
 }

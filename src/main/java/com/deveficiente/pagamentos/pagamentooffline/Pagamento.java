@@ -15,6 +15,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import org.springframework.util.Assert;
+
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
 
@@ -52,9 +54,19 @@ public class Pagamento {
 		this.transacoes.add(new Transacao(statusInicial));
 		this.codigo = UUID.randomUUID().toString();
 	}
-	
+
 	public String getCodigo() {
 		return codigo;
+	}
+
+	public void conclui() {
+		Assert.state(!foiConcluido(),"Você não pode concluir uma compra que já foi concluída");
+		this.transacoes.add(new Transacao(StatusTransacao.concluida));
+	}
+
+	public boolean foiConcluido() {
+		return this.transacoes.stream().anyMatch(
+				transacao -> transacao.temStatus(StatusTransacao.concluida));
 	}
 
 }

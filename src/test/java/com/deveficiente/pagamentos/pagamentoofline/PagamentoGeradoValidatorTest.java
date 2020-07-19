@@ -23,11 +23,20 @@ import com.deveficiente.pagamentos.pagamentooffline.PagamentoRepository;
 @TestInstance(Lifecycle.PER_METHOD)
 public class PagamentoGeradoValidatorTest {
 
-	private PagamentoRepository pagamentoRepository = (idPedido) -> {
-		if (idPedido.equals(1l)) {
-			return Optional.of(Mockito.mock(Pagamento.class));
+	private PagamentoRepository pagamentoRepository = new PagamentoRepository() {
+		
+		@Override
+		public Optional<Pagamento> findByIdPedido(Long idPedido) {
+			if (idPedido.equals(1l)) {
+				return Optional.of(Mockito.mock(Pagamento.class));
+			}
+			return Optional.empty();			
 		}
-		return Optional.empty();
+		
+		@Override
+		public Optional<Pagamento> findByCodigo(String codigoPagamento) {
+			return null;
+		}
 	};
 
 	private HttpServletRequest servletRequest = Mockito

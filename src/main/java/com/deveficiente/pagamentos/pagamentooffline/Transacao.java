@@ -53,4 +53,8 @@ public class Transacao {
 		return true;
 	}
 
+	public boolean temStatus(StatusTransacao status) {
+		return this.statusTransacao.equals(status);
+	}
+
 }
