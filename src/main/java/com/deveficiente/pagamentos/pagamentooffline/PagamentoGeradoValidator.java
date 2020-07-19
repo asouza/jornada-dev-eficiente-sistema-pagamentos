@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.servlet.HandlerMapping;
@@ -40,7 +41,7 @@ public class PagamentoGeradoValidator implements Validator {
 		String paramIdPedido = variaveisUrl.get("idPedido");
 		
 		//super acoplado com o endereco
-		Assert.hasText(paramIdPedido, "Para este validator funcionar, o PathVariable que representa o pedido precisa se chamar idPedido");
+		Assert.state(StringUtils.hasText(paramIdPedido), "Para este validator funcionar, o PathVariable que representa o pedido precisa se chamar idPedido");
 		Long idPedido = Long.valueOf(variaveisUrl.get("idPedido"));
 		
 		Optional<Pagamento> possivelPagamento = pagamentoRepository.findByIdPedido(idPedido);

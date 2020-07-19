@@ -51,11 +51,11 @@ public class PagamentoOfflineController {
 			return bindException;
 		});
 		
-		//3
+		//2
 		return executaTransacao.executa(() -> {
-			Transacao novaTransacaoOffline = request.toTransacao(valor,manager);
-			manager.persist(new Pagamento(idPedido,novaTransacaoOffline));
-			return novaTransacaoOffline.getUuid();
+			Pagamento novoPagamentoOffline = request.toPagamento(idPedido,valor,manager);
+			manager.persist(novoPagamentoOffline);
+			return novoPagamentoOffline.getCodigo();
 		});
 
 	}

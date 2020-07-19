@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -37,8 +38,26 @@ public class PagamentoGeradoValidatorTest {
 			FormaPagamento.dinheiro, 1l, 1l);
 	
 	@Test
-	@DisplayName("deveria gerar erro de validacao quando ja existe um pagamento com determinado id de pedido")
+	@DisplayName("não deveria funcionar caso a variavel que identifica o pedido na url nao se chame idPedido")
 	void teste1() {
+		
+		Map<String, String> variaveisUrl = Map.of("outroIdPedido", "1");
+		Mockito.when(servletRequest
+				.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE))
+		.thenReturn(variaveisUrl);
+		
+		Errors errors = Mockito.mock(Errors.class);
+		Mockito.when(errors.hasErrors()).thenReturn(false);
+
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			validator.validate(request, errors);
+		});
+		
+	}
+	
+	@Test
+	@DisplayName("deveria gerar erro de validacao quando ja existe um pagamento com determinado id de pedido")
+	void teste2() {
 
 		Map<String, String> variaveisUrl = Map.of("idPedido", "1");
 		Mockito.when(servletRequest
@@ -56,7 +75,7 @@ public class PagamentoGeradoValidatorTest {
 	
 	@Test
 	@DisplayName("deveria aceitar pedidos novos ")
-	void teste2() {
+	void teste3() {
 		
 		Map<String, String> variaveisUrl = Map.of("idPedido", "2");
 		Mockito.when(servletRequest
