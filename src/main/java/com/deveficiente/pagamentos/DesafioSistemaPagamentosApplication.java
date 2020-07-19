@@ -4,9 +4,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -22,9 +24,12 @@ public class DesafioSistemaPagamentosApplication implements CommandLineRunner,We
 		SpringApplication.run(DesafioSistemaPagamentosApplication.class, args);
 	}
 	
+	@Autowired
+	private Environment env;
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new PodeMeDeixarCaoticoInterceptor());
+		registry.addInterceptor(new PodeMeDeixarCaoticoInterceptor(env));
 	}
 
 	@PersistenceContext
