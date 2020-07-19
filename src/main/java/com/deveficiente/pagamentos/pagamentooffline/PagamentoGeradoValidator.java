@@ -12,6 +12,14 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.servlet.HandlerMapping;
 
+/**
+ * Esse validator foi criado para verificar se um id de pedido já
+ * existe no sistema. Entretanto ele tem uma falha de design. Está
+ * intimamente acoplado com o fato de que o parametro que indica o
+ * id do pedido deve vir na url chamando de idPedido
+ * @author albertoluizsouza
+ *
+ */
 @Component
 public class PagamentoGeradoValidator implements Validator {
 
