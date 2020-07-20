@@ -52,7 +52,7 @@ public class Pagamento {
 
 	}
 
-	public Pagamento(@NotNull Long idPedido,
+	private Pagamento(@NotNull Long idPedido,
 			@NotNull @Positive BigDecimal valor,
 			@NotNull FormaPagamento formaPagamento, @NotNull @Valid Usuario comprador,
 			@NotNull @Valid Restaurante restaurante,
@@ -84,7 +84,7 @@ public class Pagamento {
 	 * 
 	 * @param informacaoAdicional um mapa que vai ser serializado para json
 	 */
-	public void setInfoAdicional(Map<String, Object> informacaoAdicional) {
+	private void setInfoAdicional(Map<String, Object> informacaoAdicional) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			this.infoAdicional = mapper.writeValueAsString(informacaoAdicional);
@@ -93,5 +93,29 @@ public class Pagamento {
 		}
 	}
 
+	public static Pagamento cartao(Long idPedido, BigDecimal valor,
+			@NotNull FormaPagamento formaPagamento,
+			@CreditCardNumber @NotBlank String numeroCartao,
+			@Min(100) @Max(999) int codigoSeguranca,
+			@NotNull @Valid Usuario comprador,
+			@NotNull @Valid Restaurante restaurante,
+			StatusTransacao statusTransacao) {
+		Assert.isTrue(formaPagamento.online, "Forma pagamento aqui precisa ser online");
+		
+		Pagamento pagamento = new Pagamento(idPedido, valor,formaPagamento ,comprador, restaurante, statusTransacao);
+		pagamento.setInfoAdicional(Map.of("numero",numeroCartao,"codigoSeguranca",codigoSeguranca));		
+		return pagamento;
+	}
+	
+	public static Pagamento offline(Long idPedido, BigDecimal valor,
+			@NotNull FormaPagamento formaPagamento,
+			@NotNull @Valid Usuario comprador,
+			@NotNull @Valid Restaurante restaurante,
+			StatusTransacao statusTransacao) {
+		Assert.isTrue(!formaPagamento.online, "Forma pagamento aqui precisa ser offline");
+		
+		Pagamento pagamento = new Pagamento(idPedido, valor,formaPagamento ,comprador, restaurante, statusTransacao);
+		return pagamento;
+	}
 
 }

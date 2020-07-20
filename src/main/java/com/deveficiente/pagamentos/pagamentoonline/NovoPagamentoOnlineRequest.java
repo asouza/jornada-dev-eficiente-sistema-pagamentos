@@ -19,7 +19,8 @@ import com.deveficiente.pagamentos.modeladominio.Usuario;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
 
-public class NovoPagamentoOnlineRequest implements TemCombinacaoUsuarioRestauranteFormaPagamento {
+public class NovoPagamentoOnlineRequest
+		implements TemCombinacaoUsuarioRestauranteFormaPagamento {
 
 	@NotNull
 	private FormaPagamento formaPagamento;
@@ -35,7 +36,7 @@ public class NovoPagamentoOnlineRequest implements TemCombinacaoUsuarioRestauran
 	@Min(100)
 	@Max(999)
 	private int codigoSeguranca;
-	
+
 	public NovoPagamentoOnlineRequest(@NotNull FormaPagamento formaPagamento,
 			@NotNull Long idRestaurante, @NotNull Long idUsuario,
 			@CreditCardNumber String numeroCartao,
@@ -47,18 +48,18 @@ public class NovoPagamentoOnlineRequest implements TemCombinacaoUsuarioRestauran
 		this.numeroCartao = numeroCartao;
 		this.codigoSeguranca = codigoSeguranca;
 	}
-	
+
 	@Override
 	public Long getIdRestaurante() {
 		return idRestaurante;
 	}
-	
+
 	@Override
 	public Long getIdUsuario() {
 		// TODO Auto-generated method stub
 		return idUsuario;
 	}
-	
+
 	@Override
 	public FormaPagamento getFormaPagamento() {
 		return formaPagamento;
@@ -70,14 +71,17 @@ public class NovoPagamentoOnlineRequest implements TemCombinacaoUsuarioRestauran
 
 	public Pagamento toPagamento(Long idPedido, BigDecimal valor,
 			EntityManager manager) {
-		@NotNull @Valid Usuario comprador = manager.find(Usuario.class, idUsuario);
-		@NotNull @Valid Restaurante restaurante = manager.find(Restaurante.class, idRestaurante);
-		
-		Pagamento pagamento = new Pagamento(idPedido, valor,formaPagamento ,comprador, restaurante, StatusTransacao.esperando_confirmacao_pagamento);
-		pagamento.setInfoAdicional(Map.of("numero",this.numeroCartao,"codigoSeguranca",this.codigoSeguranca));
-		return pagamento;
+		@NotNull
+		@Valid
+		Usuario comprador = manager.find(Usuario.class, idUsuario);
+		@NotNull
+		@Valid
+		Restaurante restaurante = manager.find(Restaurante.class,
+				idRestaurante);
+
+		return Pagamento.cartao(idPedido, valor, formaPagamento, numeroCartao,
+				codigoSeguranca, comprador, restaurante,
+				StatusTransacao.esperando_confirmacao_pagamento);
 	}
-	
-	
 
 }

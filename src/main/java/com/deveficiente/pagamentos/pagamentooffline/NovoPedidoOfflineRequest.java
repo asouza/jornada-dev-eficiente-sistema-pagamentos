@@ -11,7 +11,8 @@ import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
 import com.deveficiente.pagamentos.pagamentoonline.TemCombinacaoUsuarioRestauranteFormaPagamento;
 
-public class NovoPedidoOfflineRequest implements TemCombinacaoUsuarioRestauranteFormaPagamento {
+public class NovoPedidoOfflineRequest
+		implements TemCombinacaoUsuarioRestauranteFormaPagamento {
 
 	@NotNull
 	private FormaPagamento formaPagamento;
@@ -29,15 +30,15 @@ public class NovoPedidoOfflineRequest implements TemCombinacaoUsuarioRestaurante
 		this.idRestaurante = idRestaurante;
 		this.idUsuario = idUsuario;
 	}
-	
+
 	public Long getIdRestaurante() {
 		return idRestaurante;
 	}
-	
+
 	public Long getIdUsuario() {
 		return idUsuario;
 	}
-	
+
 	public FormaPagamento getFormaPagamento() {
 		return formaPagamento;
 	}
@@ -46,11 +47,14 @@ public class NovoPedidoOfflineRequest implements TemCombinacaoUsuarioRestaurante
 		return !formaPagamento.online;
 	}
 
-	public Pagamento toPagamento(Long idPedido,BigDecimal valor,EntityManager manager) {
-		Usuario usuario = manager.find(Usuario.class, idUsuario);		
-		Restaurante restaurante = manager.find(Restaurante.class, idRestaurante);
-		
-		return new Pagamento(idPedido,valor,formaPagamento,usuario,restaurante,StatusTransacao.esperando_confirmacao_pagamento);
+	public Pagamento toPagamento(Long idPedido, BigDecimal valor,
+			EntityManager manager) {
+		Usuario usuario = manager.find(Usuario.class, idUsuario);
+		Restaurante restaurante = manager.find(Restaurante.class,
+				idRestaurante);
+
+		return Pagamento.offline(idPedido, valor, formaPagamento, usuario,
+				restaurante, StatusTransacao.esperando_confirmacao_pagamento);
 	}
 
 }
