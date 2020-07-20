@@ -1,6 +1,7 @@
 package com.deveficiente.pagamentos.pagamentoonline;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
@@ -72,7 +73,9 @@ public class NovoPagamentoOnlineRequest implements TemCombinacaoUsuarioRestauran
 		@NotNull @Valid Usuario comprador = manager.find(Usuario.class, idUsuario);
 		@NotNull @Valid Restaurante restaurante = manager.find(Restaurante.class, idRestaurante);
 		
-		return new Pagamento(idPedido, valor,formaPagamento ,comprador, restaurante, StatusTransacao.esperando_confirmacao_pagamento);
+		Pagamento pagamento = new Pagamento(idPedido, valor,formaPagamento ,comprador, restaurante, StatusTransacao.esperando_confirmacao_pagamento);
+		pagamento.setInfoAdicional(Map.of("numero",this.numeroCartao,"codigoSeguranca",this.codigoSeguranca));
+		return pagamento;
 	}
 	
 	

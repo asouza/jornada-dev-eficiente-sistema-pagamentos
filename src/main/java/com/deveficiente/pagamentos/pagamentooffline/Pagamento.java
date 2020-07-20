@@ -2,6 +2,7 @@ package com.deveficiente.pagamentos.pagamentooffline;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,14 +13,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import org.hibernate.validator.constraints.CreditCardNumber;
 import org.springframework.util.Assert;
 
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Entity
 public class Pagamento {
@@ -38,6 +45,7 @@ public class Pagamento {
 	@NotNull
 	private String codigo;
 	private @NotNull FormaPagamento formaPagamento;
+	private String infoAdicional;
 
 	@Deprecated
 	public Pagamento() {
@@ -71,5 +79,19 @@ public class Pagamento {
 		return this.transacoes.stream().anyMatch(
 				transacao -> transacao.temStatus(StatusTransacao.concluida));
 	}
+
+	/**
+	 * 
+	 * @param informacaoAdicional um mapa que vai ser serializado para json
+	 */
+	public void setInfoAdicional(Map<String, Object> informacaoAdicional) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			this.infoAdicional = mapper.writeValueAsString(informacaoAdicional);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 
 }
