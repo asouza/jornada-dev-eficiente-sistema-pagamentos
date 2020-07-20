@@ -17,6 +17,7 @@ import javax.validation.constraints.Positive;
 
 import org.springframework.util.Assert;
 
+import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
 
@@ -36,6 +37,7 @@ public class Pagamento {
 	private @NotNull @Valid Restaurante restaurante;
 	@NotNull
 	private String codigo;
+	private @NotNull FormaPagamento formaPagamento;
 
 	@Deprecated
 	public Pagamento() {
@@ -44,11 +46,12 @@ public class Pagamento {
 
 	public Pagamento(@NotNull Long idPedido,
 			@NotNull @Positive BigDecimal valor,
-			@NotNull @Valid Usuario comprador,
+			@NotNull FormaPagamento formaPagamento, @NotNull @Valid Usuario comprador,
 			@NotNull @Valid Restaurante restaurante,
 			@NotNull StatusTransacao statusInicial) {
 		this.idPedido = idPedido;
 		this.valor = valor;
+		this.formaPagamento = formaPagamento;
 		this.comprador = comprador;
 		this.restaurante = restaurante;
 		this.transacoes.add(new Transacao(statusInicial));

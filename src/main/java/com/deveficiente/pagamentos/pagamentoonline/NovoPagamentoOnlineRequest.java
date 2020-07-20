@@ -1,5 +1,9 @@
 package com.deveficiente.pagamentos.pagamentoonline;
 
+import java.math.BigDecimal;
+
+import javax.persistence.EntityManager;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +15,8 @@ import com.deveficiente.pagamentos.compartilhado.ExistsId;
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
+import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
+import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
 
 public class NovoPagamentoOnlineRequest implements TemCombinacaoUsuarioRestauranteFormaPagamento {
 
@@ -59,6 +65,14 @@ public class NovoPagamentoOnlineRequest implements TemCombinacaoUsuarioRestauran
 
 	public boolean pagamentoOnline() {
 		return formaPagamento.online;
+	}
+
+	public Pagamento toPagamento(Long idPedido, BigDecimal valor,
+			EntityManager manager) {
+		@NotNull @Valid Usuario comprador = manager.find(Usuario.class, idUsuario);
+		@NotNull @Valid Restaurante restaurante = manager.find(Restaurante.class, idRestaurante);
+		
+		return new Pagamento(idPedido, valor,formaPagamento ,comprador, restaurante, StatusTransacao.esperando_confirmacao_pagamento);
 	}
 	
 	

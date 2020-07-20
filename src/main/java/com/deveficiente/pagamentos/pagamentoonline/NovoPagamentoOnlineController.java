@@ -2,10 +2,10 @@ package com.deveficiente.pagamentos.pagamentoonline;
 
 import java.math.BigDecimal;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deveficiente.pagamentos.pagamentooffline.CombinacaoRestauranteUsuarioFormaPagamentoValidator;
+import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 import com.deveficiente.pagamentos.pagamentooffline.ObtemValorPedido;
+import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 
 @RestController
 public class NovoPagamentoOnlineController {
@@ -25,6 +27,10 @@ public class NovoPagamentoOnlineController {
 	@Autowired
 	//1
 	private ObtemValorPedido obtemValorPedido;
+	@Autowired
+	private EntityManager manager;
+	@Autowired
+	private ExecutaTransacao executaTransacao;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -54,35 +60,41 @@ public class NovoPagamentoOnlineController {
 			bindException.reject(null,"Olha, esse id de pedido não existe");
 			return bindException;
 		});
+				
+		Pagamento novoPagamentoSalvo = executaTransacao.executa(() -> {
+			Pagamento novoPagamento = request.toPagamento(idPedido,valor,manager);
+			manager.persist(novoPagamento);
+			return novoPagamento;
+		});
 		
 		//approach super me defendendo
-		gateways.stream()
-			.filter(gateway -> gateway.aceita(tentativaPagamento))
-			.order(gateway -> gateway.custo(tentativaPagamento))
-			.map(gateway -> {
-				try {
-				 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
-				} catch(Exception e) {
-				 Transacao falhou = new Transacao(StatusTransacao.falha);
-				 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));
-				 pagamento.adicionaTransacao(falhou);	
-				}
-			});
-		
-				
-		//approach distribuindo a defesa pelos gateways
-		gateways.stream()
-		.filter(gateway -> gateway.aceita(tentativaPagamento))
-		.order(gateway -> gateway.custo(tentativaPagamento))
-		.map(gateway -> {
-			try {
-			 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
-			} catch(Exception e) {
-				//o sistema aqui está num estado super inválido
-				throw new AssertionError(e);
-
-			}
-		});
+//		gateways.stream()
+//			.filter(gateway -> gateway.aceita(tentativaPagamento))
+//			.order(gateway -> gateway.custo(tentativaPagamento))
+//			.map(gateway -> {
+//				try {
+//				 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
+//				} catch(Exception e) {
+//				 Transacao falhou = new Transacao(StatusTransacao.falha);
+//				 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));
+//				 pagamento.adicionaTransacao(falhou);	
+//				}
+//			});
+//		
+//				
+//		//approach distribuindo a defesa pelos gateways
+//		gateways.stream()
+//		.filter(gateway -> gateway.aceita(tentativaPagamento))
+//		.order(gateway -> gateway.custo(tentativaPagamento))
+//		.map(gateway -> {
+//			try {
+//			 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
+//			} catch(Exception e) {
+//				//o sistema aqui está num estado super inválido
+//				throw new AssertionError(e);
+//
+//			}
+//		});				
 	}
 
 }

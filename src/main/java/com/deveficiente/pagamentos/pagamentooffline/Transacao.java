@@ -1,15 +1,23 @@
 package com.deveficiente.pagamentos.pagamentooffline;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 
 @Embeddable
 public class Transacao {
 
+	@NotNull
 	private StatusTransacao statusTransacao;
+	@NotBlank
 	private String codigo;
+	@NotNull
+	@PastOrPresent
+	private LocalDateTime instante;
 
 	@Deprecated
 	public Transacao() {
@@ -19,6 +27,7 @@ public class Transacao {
 	public Transacao(@NotNull StatusTransacao statusTransacao) {
 		this.statusTransacao = statusTransacao;
 		this.codigo = UUID.randomUUID().toString();
+		this.instante = LocalDateTime.now();
 	}
 
 	

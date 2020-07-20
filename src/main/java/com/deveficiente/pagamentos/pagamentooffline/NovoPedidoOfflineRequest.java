@@ -50,7 +50,7 @@ public class NovoPedidoOfflineRequest implements TemCombinacaoUsuarioRestaurante
 		Usuario usuario = manager.find(Usuario.class, idUsuario);		
 		Restaurante restaurante = manager.find(Restaurante.class, idRestaurante);
 		
-		return new Pagamento(idPedido,valor,usuario,restaurante,StatusTransacao.esperando_confirmacao_pagamento);
+		return new Pagamento(idPedido,valor,formaPagamento,usuario,restaurante,StatusTransacao.esperando_confirmacao_pagamento);
 	}
 
 }
