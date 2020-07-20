@@ -36,6 +36,8 @@ public class NovoPagamentoOnlineController {
 		/**
 		 * verifica as restricoes
 		 * 
+		 * gera um pagamento inicial
+		 * 
 		 * filtra os gateways que aceitam determinada forma de pagamento
 		 * 
 		 * ordena pelo custo da transacao
