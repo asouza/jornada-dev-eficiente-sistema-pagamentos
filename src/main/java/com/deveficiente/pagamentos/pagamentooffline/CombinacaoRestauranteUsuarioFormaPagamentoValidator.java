@@ -13,6 +13,7 @@ import org.springframework.validation.Validator;
 import com.deveficiente.pagamentos.listapagamentos.RegraFraude;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
+import com.deveficiente.pagamentos.pagamentoonline.TemCombinacaoUsuarioRestauranteFormaPagamento;
 
 @Component
 public class CombinacaoRestauranteUsuarioFormaPagamentoValidator
@@ -30,7 +31,7 @@ public class CombinacaoRestauranteUsuarioFormaPagamentoValidator
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return NovoPedidoOfflineRequest.class.isAssignableFrom(clazz);
+		return TemCombinacaoUsuarioRestauranteFormaPagamento.class.isAssignableFrom(clazz);
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class CombinacaoRestauranteUsuarioFormaPagamentoValidator
 			return;
 		}
 
-		NovoPedidoOfflineRequest request = (NovoPedidoOfflineRequest) target;
+		TemCombinacaoUsuarioRestauranteFormaPagamento request = (TemCombinacaoUsuarioRestauranteFormaPagamento) target;
 		Usuario usuario = manager.find(Usuario.class, request.getIdUsuario());
 		Restaurante restaurante = manager.find(Restaurante.class,
 				request.getIdRestaurante());

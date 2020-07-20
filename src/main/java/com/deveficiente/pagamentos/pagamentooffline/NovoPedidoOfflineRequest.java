@@ -9,8 +9,9 @@ import com.deveficiente.pagamentos.compartilhado.ExistsId;
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
+import com.deveficiente.pagamentos.pagamentoonline.TemCombinacaoUsuarioRestauranteFormaPagamento;
 
-public class NovoPedidoOfflineRequest {
+public class NovoPedidoOfflineRequest implements TemCombinacaoUsuarioRestauranteFormaPagamento {
 
 	@NotNull
 	private FormaPagamento formaPagamento;
