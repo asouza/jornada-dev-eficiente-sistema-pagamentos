@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -52,7 +53,34 @@ public class NovoPagamentoOnlineController {
 			return bindException;
 		});
 		
+		//approach super me defendendo
+		gateways.stream()
+			.filter(gateway -> gateway.aceita(tentativaPagamento))
+			.order(gateway -> gateway.custo(tentativaPagamento))
+			.map(gateway -> {
+				try {
+				 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
+				} catch(Exception e) {
+				 Transacao falhou = new Transacao(StatusTransacao.falha);
+				 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));
+				 pagamento.adicionaTransacao(falhou);	
+				}
+			});
 		
+				
+		//approach distribuindo a defesa pelos gateways
+		gateways.stream()
+		.filter(gateway -> gateway.aceita(tentativaPagamento))
+		.order(gateway -> gateway.custo(tentativaPagamento))
+		.map(gateway -> {
+			try {
+			 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
+			} catch(Exception e) {
+				//o sistema aqui está num estado super inválido
+				throw new AssertionError(e);
+
+			}
+		});
 	}
 
 }
