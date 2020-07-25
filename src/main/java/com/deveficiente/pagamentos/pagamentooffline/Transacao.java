@@ -1,12 +1,17 @@
 package com.deveficiente.pagamentos.pagamentooffline;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
+
+import com.deveficiente.pagamentos.compartilhado.FacilitadorJackson;
+import com.deveficiente.pagamentos.pagamentoonline.Gateway;
+import com.deveficiente.pagamentos.pagamentoonline.GatewaySeya;
 
 @Embeddable
 public class Transacao {
@@ -18,6 +23,7 @@ public class Transacao {
 	@NotNull
 	@PastOrPresent
 	private LocalDateTime instante;
+	private String informacaoAdicional;
 
 	@Deprecated
 	public Transacao() {
@@ -30,7 +36,6 @@ public class Transacao {
 		this.instante = LocalDateTime.now();
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Transacao [statusTransacao=" + statusTransacao + ", codigo="
@@ -64,6 +69,17 @@ public class Transacao {
 
 	public boolean temStatus(StatusTransacao status) {
 		return this.statusTransacao.equals(status);
+	}
+
+	public void setInfoAdicional(Map<String, Object> infoAdicional) {
+		this.informacaoAdicional = FacilitadorJackson.serializa(infoAdicional);
+	}
+
+	public static Transacao concluida(Gateway gateway) {
+		Transacao transacao = new Transacao(StatusTransacao.concluida);
+		transacao.informacaoAdicional = FacilitadorJackson
+				.serializa(Map.of("gateway", gateway.toString()));
+		return transacao;
 	}
 
 }

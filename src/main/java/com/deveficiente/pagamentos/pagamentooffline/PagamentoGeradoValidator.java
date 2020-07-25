@@ -34,7 +34,13 @@ public class PagamentoGeradoValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return NovoPedidoOfflineRequest.class.isAssignableFrom(clazz);
+		return StringUtils.hasText(idPedido());
+	}
+	
+	private String idPedido() {
+		Map<String, String> variaveisUrl = (Map<String, String>) request
+				.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		return variaveisUrl.get("idPedido");		
 	}
 
 	@Override
@@ -43,14 +49,10 @@ public class PagamentoGeradoValidator implements Validator {
 			return ;
 		}
 		
-		//utilizando o fw a meu favor
-		Map<String, String> variaveisUrl = (Map<String, String>) request
-				.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-		String paramIdPedido = variaveisUrl.get("idPedido");
-		
+		String paramIdPedido = idPedido();		
 		//super acoplado com o endereco
 		Assert.state(StringUtils.hasText(paramIdPedido), "Para este validator funcionar, o PathVariable que representa o pedido precisa se chamar idPedido");
-		Long idPedido = Long.valueOf(variaveisUrl.get("idPedido"));
+		Long idPedido = Long.valueOf(paramIdPedido);
 		
 		Optional<Pagamento> possivelPagamento = pagamentoRepository.findByIdPedido(idPedido);
 		if(possivelPagamento.isPresent()) {

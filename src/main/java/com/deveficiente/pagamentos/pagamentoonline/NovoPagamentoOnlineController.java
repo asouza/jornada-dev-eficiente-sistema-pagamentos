@@ -1,6 +1,12 @@
 package com.deveficiente.pagamentos.pagamentoonline;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
@@ -18,27 +24,38 @@ import com.deveficiente.pagamentos.pagamentooffline.CombinacaoRestauranteUsuario
 import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 import com.deveficiente.pagamentos.pagamentooffline.ObtemValorPedido;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
+import com.deveficiente.pagamentos.pagamentooffline.PagamentoGeradoValidator;
+import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
+import com.deveficiente.pagamentos.pagamentooffline.Transacao;
 
 @RestController
 public class NovoPagamentoOnlineController {
-	
+
 	@Autowired
 	private CombinacaoRestauranteUsuarioFormaPagamentoValidator combinacaoUsuarioRestauranteValidator;
 	@Autowired
-	//1
+	// 1
 	private ObtemValorPedido obtemValorPedido;
 	@Autowired
 	private EntityManager manager;
 	@Autowired
 	private ExecutaTransacao executaTransacao;
-	
+	@Autowired
+	private SortedSet<Gateway> gateways;
+	@Autowired
+	private PagamentoGeradoValidator pagamentoGeradoValidtor;
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		binder.addValidators(combinacaoUsuarioRestauranteValidator,new FormaPagamentoOnlineValidator());
+		binder.addValidators(pagamentoGeradoValidtor,
+				combinacaoUsuarioRestauranteValidator,
+				new FormaPagamentoOnlineValidator());
 	}
 
 	@PostMapping(value = "/pagamento/online/{idPedido}")
-	public void paga(@PathVariable("idPedido") Long idPedido ,@RequestBody @Valid NovoPagamentoOnlineRequest request) throws Exception {
+	public void paga(@PathVariable("idPedido") Long idPedido,
+			@RequestBody @Valid NovoPagamentoOnlineRequest request)
+			throws Exception {
 		/**
 		 * verifica as restricoes
 		 * 
@@ -50,83 +67,48 @@ public class NovoPagamentoOnlineController {
 		 * 
 		 * tenta pagar utilizando os gateways
 		 * 
-		 * cada transacao precisa ficar salva no pagamento que estamos tentando gerar
+		 * cada transacao precisa ficar salva no pagamento que estamos tentando
+		 * gerar
 		 * 
 		 * salva o pagamento
 		 */
-		
-		BigDecimal valor = obtemValorPedido.executa(idPedido,() -> {
-			BindException bindException = new BindException("","");
-			bindException.reject(null,"Olha, esse id de pedido não existe");
+
+		BigDecimal valor = obtemValorPedido.executa(idPedido, () -> {
+			BindException bindException = new BindException("", "");
+			bindException.reject(null, "Olha, esse id de pedido não existe");
 			return bindException;
 		});
-				
+
 		Pagamento novoPagamentoSalvo = executaTransacao.executa(() -> {
-			Pagamento novoPagamento = request.toPagamento(idPedido,valor,manager);
+			Pagamento novoPagamento = request.toPagamento(idPedido, valor,
+					manager);
 			manager.persist(novoPagamento);
 			return novoPagamento;
 		});
-			
-		
-		//approach super me defendendo
-//		gateways.stream()
-//			.filter(gateway -> gateway.aceita(tentativaPagamento))
-//			.order(gateway -> gateway.custo(tentativaPagamento))
-//			.collect(Collectors.toList());
-		
-//		for(Gateway gateway : gatewaysOrdenados) {
-//	     try {
-//		     Transacao novaTransacao = gateway.paga(tentativaPagamento);
-//			 pagamento.adicionaTransacao(novaTransacao);
-//			} catch(Exception e) {
-//			 Transacao falhou = new Transacao(StatusTransacao.falha);
-//			 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));
-//			 pagamento.adicionaTransacao(falhou);	
-//			}
-//		}			
 
-//		
-//				
-//		//approach distribuindo a defesa pelos gateways
-//		gateways.stream()
-//		.filter(gateway -> gateway.aceita(tentativaPagamento))
-//		.order(gateway -> gateway.custo(tentativaPagamento))
-//		
-//		for(Gateway gateway : gatewaysOrdenados){
-//			try {
-//	        Transacao novaTransacao = gateway.paga(tentativaPagamento);
-//			 pagamento.adicionaTransacao(novaTransacao);
-//			} catch(Exception e) {
-//				//o sistema aqui está num estado super inválido
-//				throw new AssertionError(e);
-//
-//			}
-//		});	
-		
 //		//approach deixando claro no retorno que as coisas podem dar erradas
-//		gateways.stream()
-//		.filter(gateway -> gateway.aceita(tentativaPagamento))
-//		.order(gateway -> gateway.custo(tentativaPagamento))
-//		
-//		for(Gateway gateway : gatewaysOrdenados){
-//			try {
-//	         Resultado<Transacao,Exception> possivelNovaTransacao = gateway.paga(tentativaPagamento);
-//		     if(possivelNovaTransacao.temErro()) {
-////				 Transacao falhou = new Transacao(StatusTransacao.falha);
-////				 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));		    	 
-//		     } else {
-//		    	 pagamento.adicionaTransacao(possivelNovaTransacao.get());
-//		    	 break;
-//		     }
-//			 pagamento.adicionaTransacao(novaTransacao);
-//			} catch(Exception e) {
-//				//o sistema aqui está num estado super inválido
-//				throw new AssertionError(e);
-//
-//			}
-//		});		
-	
-	
+		List<Gateway> gatewaysOrdenados = gateways.stream()
+				.filter(gateway -> gateway.aceita(novoPagamentoSalvo))
+				.collect(Collectors.toList());
+
+		for (Gateway gateway : gatewaysOrdenados) {
+			Resultado<Exception, Transacao> possivelNovaTransacao = gateway
+					.processa(novoPagamentoSalvo);
+
+			if (possivelNovaTransacao.temErro()) {
+				Transacao falhou = new Transacao(StatusTransacao.falha);
+				falhou.setInfoAdicional(Map.of("gateway", gateway, "exception",
+						possivelNovaTransacao.getStackTrace()));
+			} else {
+				executaTransacao.executa(() -> {
+					novoPagamentoSalvo
+							.adicionaTransacao(possivelNovaTransacao.get());
+					return null;
+				});
+				break;
+			}
+		}
+
 	}
 
 }

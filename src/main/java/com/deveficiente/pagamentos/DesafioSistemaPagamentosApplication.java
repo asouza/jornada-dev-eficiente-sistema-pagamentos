@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,6 +19,7 @@ import com.deveficiente.pagamentos.modeladominio.Usuario;
 import com.deveficiente.pagamentos.outrossistemas.PodeMeDeixarCaoticoInterceptor;
 
 @SpringBootApplication
+@EnableFeignClients
 public class DesafioSistemaPagamentosApplication implements CommandLineRunner,WebMvcConfigurer {
 
 	public static void main(String[] args) {

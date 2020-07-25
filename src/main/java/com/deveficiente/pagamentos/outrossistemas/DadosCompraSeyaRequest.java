@@ -8,6 +8,8 @@ import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 
+import com.deveficiente.pagamentos.pagamentooffline.DadosCartao;
+
 public class DadosCompraSeyaRequest {
 
 	@CreditCardNumber
@@ -25,6 +27,28 @@ public class DadosCompraSeyaRequest {
 		this.num_cartao = num_cartao;
 		this.codigo_seguranca = codigo_seguranca;
 		this.valor_compra = valor_compra;
+	}
+
+	public DadosCompraSeyaRequest(DadosCartao dadosCartao, BigDecimal valor) {
+		this.num_cartao = dadosCartao.getNumero();
+		this.codigo_seguranca = dadosCartao.getCodigoSeguranca();
+		this.valor_compra = valor;
+	}
+	
+	public DadosCompraSeyaRequest() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public int getCodigo_seguranca() {
+		return codigo_seguranca;
+	}
+	
+	public String getNum_cartao() {
+		return num_cartao;
+	}
+	
+	public BigDecimal getValor_compra() {
+		return valor_compra;
 	}
 
 }

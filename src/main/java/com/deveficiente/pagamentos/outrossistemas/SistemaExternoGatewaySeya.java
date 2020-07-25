@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-public class GatewaySeya implements PodeMeDeixarCaotico{
+public class SistemaExternoGatewaySeya implements PodeMeDeixarCaotico{
 	
 	private Set<Integer> codigosGerados = new HashSet<>();
 	
 	private static final Logger log = LoggerFactory
-			.getLogger(GatewaySeya.class);
+			.getLogger(SistemaExternoGatewaySeya.class);
 
 
 	@PostMapping(value = "/seya/verifica")
