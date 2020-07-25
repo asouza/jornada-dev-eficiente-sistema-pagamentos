@@ -50,7 +50,7 @@ public class NovoPagamentoOnlineController {
 		 * 
 		 * tenta pagar utilizando os gateways
 		 * 
-		 * cada precisa ficar salva no pagamento que estamos tentando gerar
+		 * cada transacao precisa ficar salva no pagamento que estamos tentando gerar
 		 * 
 		 * salva o pagamento
 		 */
@@ -66,35 +66,67 @@ public class NovoPagamentoOnlineController {
 			manager.persist(novoPagamento);
 			return novoPagamento;
 		});
+			
 		
 		//approach super me defendendo
 //		gateways.stream()
 //			.filter(gateway -> gateway.aceita(tentativaPagamento))
 //			.order(gateway -> gateway.custo(tentativaPagamento))
-//			.map(gateway -> {
-//				try {
-//				 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
-//				} catch(Exception e) {
-//				 Transacao falhou = new Transacao(StatusTransacao.falha);
-//				 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));
-//				 pagamento.adicionaTransacao(falhou);	
-//				}
-//			});
+//			.collect(Collectors.toList());
+		
+//		for(Gateway gateway : gatewaysOrdenados) {
+//	     try {
+//		     Transacao novaTransacao = gateway.paga(tentativaPagamento);
+//			 pagamento.adicionaTransacao(novaTransacao);
+//			} catch(Exception e) {
+//			 Transacao falhou = new Transacao(StatusTransacao.falha);
+//			 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));
+//			 pagamento.adicionaTransacao(falhou);	
+//			}
+//		}			
+
 //		
 //				
 //		//approach distribuindo a defesa pelos gateways
 //		gateways.stream()
 //		.filter(gateway -> gateway.aceita(tentativaPagamento))
 //		.order(gateway -> gateway.custo(tentativaPagamento))
-//		.map(gateway -> {
+//		
+//		for(Gateway gateway : gatewaysOrdenados){
 //			try {
-//			 pagamento.adicionaTransacao(gateway.paga(tentativaPagamento));
+//	        Transacao novaTransacao = gateway.paga(tentativaPagamento);
+//			 pagamento.adicionaTransacao(novaTransacao);
 //			} catch(Exception e) {
 //				//o sistema aqui está num estado super inválido
 //				throw new AssertionError(e);
 //
 //			}
-//		});				
+//		});	
+		
+//		//approach deixando claro no retorno que as coisas podem dar erradas
+//		gateways.stream()
+//		.filter(gateway -> gateway.aceita(tentativaPagamento))
+//		.order(gateway -> gateway.custo(tentativaPagamento))
+//		
+//		for(Gateway gateway : gatewaysOrdenados){
+//			try {
+//	         Resultado<Transacao,Exception> possivelNovaTransacao = gateway.paga(tentativaPagamento);
+//		     if(possivelNovaTransacao.temErro()) {
+////				 Transacao falhou = new Transacao(StatusTransacao.falha);
+////				 falhou.setInfoAdicional(Map.of("gateway",gateway,"exception",Arrays.toString(e.getStackTrace())));		    	 
+//		     } else {
+//		    	 pagamento.adicionaTransacao(possivelNovaTransacao.get());
+//		    	 break;
+//		     }
+//			 pagamento.adicionaTransacao(novaTransacao);
+//			} catch(Exception e) {
+//				//o sistema aqui está num estado super inválido
+//				throw new AssertionError(e);
+//
+//			}
+//		});		
+	
+	
 	}
 
 }
