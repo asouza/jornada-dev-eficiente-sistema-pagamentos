@@ -43,7 +43,7 @@ public class NovoPagamentoOnlineController {
 	private ExecutaTransacao executaTransacao;
 	@Autowired
 	//1
-	private Set<Gateway> gateways;
+	private Gateways gateways;
 	@Autowired
 	//1
 	private PagamentoGeradoValidator pagamentoGeradoValidtor;
@@ -100,39 +100,12 @@ public class NovoPagamentoOnlineController {
 		 * Transacao novaTransacao = gateways.paga(novoPagamentoSalvo);
 		 * executaTransacao.executa(() -> pagamento.adicionaTransacao(novaTransacao));
 		 */
-
-//		//approach deixando claro no retorno que as coisas podem dar erradas
-		List<Gateway> gatewaysOrdenados = gateways.stream()
-				//1
-				.filter(gateway -> gateway.aceita(novoPagamentoSalvo))
-				//1
-				.sorted((gateway1,gateway2) -> {
-					return gateway1.custo(novoPagamentoSalvo).compareTo(gateway2.custo(novoPagamentoSalvo));
-				})
-				.collect(Collectors.toList());
-
-		//1
-		for (Gateway gateway : gatewaysOrdenados) {
-			//2 resultado + transacao
-			Resultado<Exception, Transacao> possivelNovaTransacao = gateway
-					.processa(novoPagamentoSalvo);
-
-			//1
-			if (possivelNovaTransacao.temErro()) {
-				Transacao falhou = new Transacao(StatusTransacao.falha);
-				falhou.setInfoAdicional(Map.of("gateway", gateway, "exception",
-						possivelNovaTransacao.getStackTrace()));
-			//1
-			} else {
-				//1
-				executaTransacao.executa(() -> {
-					novoPagamentoSalvo
-							.adicionaTransacao(possivelNovaTransacao.get());
-					return null;
-				});
-				break;
-			}
-		}
+		
+		List<Transacao> transacoesGeradas = gateways.processa(novoPagamentoSalvo);
+		executaTransacao.executa(() -> {
+			novoPagamentoSalvo.adicionaTransacao(transacoesGeradas);
+			return null;
+		});
 
 	}
 

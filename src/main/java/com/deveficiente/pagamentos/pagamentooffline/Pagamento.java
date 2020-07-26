@@ -2,6 +2,7 @@ package com.deveficiente.pagamentos.pagamentooffline;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -114,14 +115,16 @@ public class Pagamento {
 		return pagamento;
 	}
 
-	public void adicionaTransacao(Transacao novaTransacao) {
+	public void adicionaTransacao(List<Transacao> transacoesGeradas) {
 		Assert.state(
 				transacoes.stream()
 						.noneMatch(transacao -> transacao
 								.temStatus(StatusTransacao.concluida)),
 				"Não pode adicionar transacao quando já tem uma marcando que concluiu");
-		
-			Assert.state(this.transacoes.add(novaTransacao),"A transação sendo adicionada já existe no pagamento => "+novaTransacao);
+
+		Assert.state(this.transacoes.addAll(transacoesGeradas),
+				"A transação sendo adicionada já existe no pagamento => "
+						+ transacoesGeradas);
 	}
 
 	public FormaPagamento getFormaPagamento() {
@@ -129,10 +132,13 @@ public class Pagamento {
 	}
 
 	public DadosCartao getDadosCartao() {
-		Assert.isTrue(formaPagamento.online,"Não tem dado de cartão para forma de pagamento que não é online");
-		Assert.hasText(infoAdicional, "Você deveria ter adicionado informacao adicional relativa ao cartao");
-		
-		return FacilitadorJackson.desserializa(infoAdicional,DadosCartao.class);
+		Assert.isTrue(formaPagamento.online,
+				"Não tem dado de cartão para forma de pagamento que não é online");
+		Assert.hasText(infoAdicional,
+				"Você deveria ter adicionado informacao adicional relativa ao cartao");
+
+		return FacilitadorJackson.desserializa(infoAdicional,
+				DadosCartao.class);
 	}
 
 	public BigDecimal getValor() {
