@@ -6,9 +6,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
@@ -17,32 +22,26 @@ import com.deveficiente.pagamentos.pagamentoonline.gateways.Gateway;
 
 //8
 @Service
+@Validated
 public class Gateways {
 
-	@Autowired
 	// 1
-	private Set<Gateway> gateways;
+	private GatewaysOrdenadosPorCusto gatewaysOrdenados;
+
+	public Gateways(@NotNull GatewaysOrdenadosPorCusto gatewaysOrdenados) {
+		this.gatewaysOrdenados = gatewaysOrdenados;
+	}
 
 	/**
 	 * 
 	 * @param pagamento
 	 * @return lista de transacoes geradas enquanto tentava pagar
 	 */
-	public List<Transacao> processa(Pagamento pagamento) {
-//		//approach deixando claro no retorno que as coisas podem dar erradas
-		List<Gateway> gatewaysOrdenados = gateways.stream()
-				// 1
-				.filter(gateway -> gateway.aceita(pagamento))
-				// 1
-				.sorted((gateway1, gateway2) -> {
-					return gateway1.custo(pagamento)
-							.compareTo(gateway2.custo(pagamento));
-				}).collect(Collectors.toList());
-
+	public List<Transacao> processa(@NotNull @Valid Pagamento pagamento) {
 		// 1
 		ArrayList<Transacao> transacoes = new ArrayList<>();
 		// 1
-		for (Gateway gateway : gatewaysOrdenados) {
+		for (Gateway gateway : gatewaysOrdenados.ordena(pagamento)) {
 			// 1 resultado
 			Resultado<Exception, Transacao> possivelNovaTransacao = gateway
 					.processa(pagamento);
