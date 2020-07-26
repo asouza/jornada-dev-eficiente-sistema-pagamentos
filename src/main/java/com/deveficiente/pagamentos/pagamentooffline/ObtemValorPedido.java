@@ -25,9 +25,9 @@ public class ObtemValorPedido {
 		this.endpointValorPedido = endpointValorPedido;
 	}
 
-	public BigDecimal executa(Long idPedido,
-			Supplier<Exception> codigoEmCasoPedidoNaoExistente)
-			throws Exception {
+	public <E extends Exception> BigDecimal executa(Long idPedido,
+			Supplier<E> codigoEmCasoPedidoNaoExistente)
+			throws E {
 		// 1
 		try {
 			Map<String, Object> pedido = restTemplate
