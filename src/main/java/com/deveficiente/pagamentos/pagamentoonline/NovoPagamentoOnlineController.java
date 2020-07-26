@@ -2,9 +2,6 @@ package com.deveficiente.pagamentos.pagamentoonline;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
@@ -23,16 +20,14 @@ import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 import com.deveficiente.pagamentos.pagamentooffline.ObtemValorPedido;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.PagamentoGeradoValidator;
-import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
 
 @RestController
 //15
+//11
+//9
 public class NovoPagamentoOnlineController {
 
-	//1
-	@Autowired
-	private CombinacaoRestauranteUsuarioFormaPagamentoValidator combinacaoUsuarioRestauranteValidator;
 	@Autowired
 	// 1
 	private ObtemValorPedido obtemValorPedido;
@@ -44,15 +39,14 @@ public class NovoPagamentoOnlineController {
 	@Autowired
 	//1
 	private Gateways gateways;
+	
 	@Autowired
 	//1
-	private PagamentoGeradoValidator pagamentoGeradoValidtor;
+	private NovoPagamentoOnlineValidator novoPagamentoOnlineValidator;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		binder.addValidators(pagamentoGeradoValidtor,
-				combinacaoUsuarioRestauranteValidator,
-				new FormaPagamentoOnlineValidator());
+		binder.addValidators(novoPagamentoOnlineValidator);
 	}
 
 	@PostMapping(value = "/pagamento/online/{idPedido}")
@@ -102,6 +96,7 @@ public class NovoPagamentoOnlineController {
 		 */
 		
 		List<Transacao> transacoesGeradas = gateways.processa(novoPagamentoSalvo);
+		//1
 		executaTransacao.executa(() -> {
 			novoPagamentoSalvo.adicionaTransacao(transacoesGeradas);
 			return null;
