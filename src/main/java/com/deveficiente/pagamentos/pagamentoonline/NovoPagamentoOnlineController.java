@@ -27,8 +27,10 @@ import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
 
 @RestController
+//15
 public class NovoPagamentoOnlineController {
 
+	//1
 	@Autowired
 	private CombinacaoRestauranteUsuarioFormaPagamentoValidator combinacaoUsuarioRestauranteValidator;
 	@Autowired
@@ -37,10 +39,13 @@ public class NovoPagamentoOnlineController {
 	@Autowired
 	private EntityManager manager;
 	@Autowired
+	//1
 	private ExecutaTransacao executaTransacao;
 	@Autowired
+	//1
 	private Set<Gateway> gateways;
 	@Autowired
+	//1
 	private PagamentoGeradoValidator pagamentoGeradoValidtor;
 
 	@InitBinder
@@ -52,6 +57,7 @@ public class NovoPagamentoOnlineController {
 
 	@PostMapping(value = "/pagamento/online/{idPedido}")
 	public void paga(@PathVariable("idPedido") Long idPedido,
+			//1
 			@RequestBody @Valid NovoPagamentoOnlineRequest request)
 			throws Exception {
 		/**
@@ -71,12 +77,14 @@ public class NovoPagamentoOnlineController {
 		 * salva o pagamento
 		 */
 
+		//1
 		BigDecimal valor = obtemValorPedido.executa(idPedido, () -> {
 			BindException bindException = new BindException("", "");
 			bindException.reject(null, "Olha, esse id de pedido não existe");
 			return bindException;
 		});
 
+		//2 pagamento + funcao como argumento
 		Pagamento novoPagamentoSalvo = executaTransacao.executa(() -> {
 			Pagamento novoPagamento = request.toPagamento(idPedido, valor,
 					manager);
@@ -86,21 +94,28 @@ public class NovoPagamentoOnlineController {
 
 //		//approach deixando claro no retorno que as coisas podem dar erradas
 		List<Gateway> gatewaysOrdenados = gateways.stream()
+				//1
 				.filter(gateway -> gateway.aceita(novoPagamentoSalvo))
+				//1
 				.sorted((gateway1,gateway2) -> {
 					return gateway1.custo(novoPagamentoSalvo).compareTo(gateway2.custo(novoPagamentoSalvo));
 				})
 				.collect(Collectors.toList());
 
+		//1
 		for (Gateway gateway : gatewaysOrdenados) {
+			//2 resultado + transacao
 			Resultado<Exception, Transacao> possivelNovaTransacao = gateway
 					.processa(novoPagamentoSalvo);
 
+			//1
 			if (possivelNovaTransacao.temErro()) {
 				Transacao falhou = new Transacao(StatusTransacao.falha);
 				falhou.setInfoAdicional(Map.of("gateway", gateway, "exception",
 						possivelNovaTransacao.getStackTrace()));
+			//1
 			} else {
+				//1
 				executaTransacao.executa(() -> {
 					novoPagamentoSalvo
 							.adicionaTransacao(possivelNovaTransacao.get());
