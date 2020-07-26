@@ -1,5 +1,7 @@
 package com.deveficiente.pagamentos.modeladominio;
 
+import java.util.stream.Stream;
+
 public enum FormaPagamento {
 
 	visa(true, "cartao visa"), master(true, "cartao master"),
@@ -17,5 +19,9 @@ public enum FormaPagamento {
 
 	public String getDescricao() {
 		return descricao;
+	}
+
+	public boolean pertence(FormaPagamento... grupo) {
+		return Stream.of(grupo).anyMatch(forma -> forma.equals(this));
 	}
 }

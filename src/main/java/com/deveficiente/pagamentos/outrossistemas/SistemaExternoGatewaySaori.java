@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GatewaySaori implements PodeMeDeixarCaotico{
+public class SistemaExternoGatewaySaori implements PodeMeDeixarCaotico{
 	
 	private static final Logger log = LoggerFactory
-			.getLogger(GatewaySaori.class);
+			.getLogger(SistemaExternoGatewaySaori.class);
 
 
 	@PostMapping(value = "/saori/processa")

@@ -1,11 +1,9 @@
 package com.deveficiente.pagamentos.pagamentoonline;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -41,7 +39,7 @@ public class NovoPagamentoOnlineController {
 	@Autowired
 	private ExecutaTransacao executaTransacao;
 	@Autowired
-	private SortedSet<Gateway> gateways;
+	private Set<Gateway> gateways;
 	@Autowired
 	private PagamentoGeradoValidator pagamentoGeradoValidtor;
 
@@ -89,6 +87,9 @@ public class NovoPagamentoOnlineController {
 //		//approach deixando claro no retorno que as coisas podem dar erradas
 		List<Gateway> gatewaysOrdenados = gateways.stream()
 				.filter(gateway -> gateway.aceita(novoPagamentoSalvo))
+				.sorted((gateway1,gateway2) -> {
+					return gateway1.custo(novoPagamentoSalvo).compareTo(gateway2.custo(novoPagamentoSalvo));
+				})
 				.collect(Collectors.toList());
 
 		for (Gateway gateway : gatewaysOrdenados) {

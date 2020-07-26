@@ -51,4 +51,12 @@ public class DadosCompraSeyaRequest {
 		return valor_compra;
 	}
 
+	@Override
+	public String toString() {
+		return "DadosCompraSeyaRequest [num_cartao=" + num_cartao
+				+ ", codigo_seguranca=" + codigo_seguranca + ", valor_compra="
+				+ valor_compra + "]";
+	}
+
+	
 }

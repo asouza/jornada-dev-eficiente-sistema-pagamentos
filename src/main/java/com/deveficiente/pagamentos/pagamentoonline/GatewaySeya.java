@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +22,10 @@ public class GatewaySeya implements Gateway{
 	
 	@Autowired
 	private RequestsGateways requestsGateways;
+	
+	private static final Logger log = LoggerFactory
+			.getLogger(GatewaySeya.class);
 
-	@Override
-	public int compareTo(Gateway o) {
-		return this.custo().compareTo(o.custo());
-	}
 
 	@Override
 	public boolean aceita(@NotNull @Valid Pagamento pagamento) {
@@ -36,6 +37,7 @@ public class GatewaySeya implements Gateway{
 	@Override
 	public Resultado<Exception, Transacao> processa(
 			@NotNull @Valid Pagamento pagamento) {
+		log.debug("Processando pagamento por gateway Seya");
 		DadosCartao dadosCartao = pagamento.getDadosCartao();
 		int codigo = requestsGateways.seyaVerifica(new DadosCartaoSeyaRequest(dadosCartao));
 		requestsGateways.seyaProcessa(codigo, new DadosCompraSeyaRequest(dadosCartao,pagamento.getValor()));
@@ -44,7 +46,7 @@ public class GatewaySeya implements Gateway{
 	}
 
 	@Override
-	public BigDecimal custo() {
+	public BigDecimal custo(Pagamento pagamento) {
 		return new BigDecimal("6");
 	}
 

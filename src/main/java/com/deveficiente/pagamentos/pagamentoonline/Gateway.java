@@ -14,9 +14,9 @@ import com.deveficiente.pagamentos.pagamentooffline.Transacao;
  * @author albertoluizsouza
  *
  */
-public interface Gateway extends Comparable<Gateway> {
+public interface Gateway {
 
-	boolean aceita(@NotNull @Valid Pagamento novoPagamentoSalvo);
+	boolean aceita(@NotNull @Valid Pagamento pagamento);
 
 	Resultado<Exception,Transacao> processa(@NotNull @Valid Pagamento pagamento);
 	
@@ -26,7 +26,7 @@ public interface Gateway extends Comparable<Gateway> {
 	@Override
 	int hashCode();
 
-	BigDecimal custo();
+	BigDecimal custo(@NotNull @Valid Pagamento pagamento);
 	
 
 }
