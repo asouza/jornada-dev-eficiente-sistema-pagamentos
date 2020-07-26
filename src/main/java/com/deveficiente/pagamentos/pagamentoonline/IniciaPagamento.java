@@ -34,7 +34,7 @@ public class IniciaPagamento {
 	@PersistenceContext
 	private EntityManager manager;
 
-	public Pagamento executa(Long idPedido,
+	public Persisted<Pagamento> executa(Long idPedido,
 			@Valid NovoPagamentoOnlineRequest request) throws BindException {
 		ForceSiteCall.fromExactlyPoint(NovoPagamentoOnlineController.class);
 		//1
@@ -52,7 +52,7 @@ public class IniciaPagamento {
 			return novoPagamento;
 		});
 		
-		return novoPagamentoSalvo;
+		return new Persisted<Pagamento>(novoPagamentoSalvo);
 	}
 
 }

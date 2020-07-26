@@ -39,7 +39,7 @@ public class NovoPagamentoOnlineController {
 			@RequestBody @Valid NovoPagamentoOnlineRequest request)
 			throws Exception {
 		Pagamento novoPagamentoSalvo = iniciaPagamento.executa(idPedido,
-				request);
+				request).get();
 
 		List<Transacao> transacoesGeradas = gateways
 				.processa(novoPagamentoSalvo);
