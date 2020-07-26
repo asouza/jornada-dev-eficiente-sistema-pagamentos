@@ -19,26 +19,30 @@ import com.deveficiente.pagamentos.pagamentoonline.Resultado;
 
 @Service
 public class GatewaySaori extends Gateway {
-	
-	
+
 	private static final Logger log = LoggerFactory
 			.getLogger(GatewaySaori.class);
 	private String id = "gateway-saori";
 
-	
-	@Autowired
 	private RequestsGateways requestsGateways;
 
+	public GatewaySaori(RequestsGateways requestsGateways) {
+		super();
+		this.requestsGateways = requestsGateways;
+	}
+
 	@Override
-	public boolean aceiteEspecifico(@NotNull @Valid Pagamento novoPagamentoSalvo) {
+	public boolean aceiteEspecifico(
+			@NotNull @Valid Pagamento novoPagamentoSalvo) {
 		FormaPagamento formaPagamento = novoPagamentoSalvo.getFormaPagamento();
-		return formaPagamento.pertence(FormaPagamento.visa,FormaPagamento.master);
+		return formaPagamento.pertence(FormaPagamento.visa,
+				FormaPagamento.master);
 	}
 
 	@Override
 	public Resultado<Exception, Transacao> processaEspecifico(
 			@NotNull @Valid Pagamento pagamento) {
-		
+
 		log.debug("Processando pagamento por gateway Saori");
 		DadosCompraGenerico request = new DadosCompraGenerico(pagamento);
 		requestsGateways.saoriProcessa(request);
@@ -79,9 +83,5 @@ public class GatewaySaori extends Gateway {
 			return false;
 		return true;
 	}
-
-
-	
-	
 
 }

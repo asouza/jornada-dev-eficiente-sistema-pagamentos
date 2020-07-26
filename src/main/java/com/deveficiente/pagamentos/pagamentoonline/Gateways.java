@@ -59,7 +59,7 @@ public class Gateways {
 			}
 		}
 
-		Assert.isTrue(!transacoes.isEmpty(),
+		Assert.state(!transacoes.isEmpty(),
 				"Pelo menos um gateway deve ter processado o pagamento");
 		return transacoes;
 	}

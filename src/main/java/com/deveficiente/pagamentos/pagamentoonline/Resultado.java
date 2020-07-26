@@ -52,4 +52,10 @@ public class Resultado<E extends Exception, S> {
 		return resultado;
 	}
 
+	public static <E extends Exception,T> Resultado<E, T> erro(E exception) {
+		Resultado<E, T> resultado = new Resultado<E,T>();
+		resultado.erro = exception;
+		return resultado;
+	}
+
 }

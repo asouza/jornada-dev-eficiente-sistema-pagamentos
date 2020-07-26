@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
@@ -22,7 +21,6 @@ import com.deveficiente.pagamentos.pagamentoonline.Resultado;
 @Service
 public class GatewaySeya extends Gateway{
 	
-	@Autowired
 	private RequestsGateways requestsGateways;
 	
 	private String id =  "gateway-seya";
@@ -30,6 +28,10 @@ public class GatewaySeya extends Gateway{
 	private static final Logger log = LoggerFactory
 			.getLogger(GatewaySeya.class);
 
+
+	public GatewaySeya(RequestsGateways requestsGateways) {
+		this.requestsGateways = requestsGateways;
+	}
 
 	@Override
 	public boolean aceiteEspecifico(@NotNull @Valid Pagamento pagamento) {
