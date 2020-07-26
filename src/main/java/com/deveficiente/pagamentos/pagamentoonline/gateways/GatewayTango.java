@@ -1,4 +1,4 @@
-package com.deveficiente.pagamentos.pagamentoonline;
+package com.deveficiente.pagamentos.pagamentoonline.gateways;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.deveficiente.pagamentos.outrossistemas.DadosCompraGenerico;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
+import com.deveficiente.pagamentos.pagamentoonline.RequestsGateways;
+import com.deveficiente.pagamentos.pagamentoonline.Resultado;
 
 @Service
 public class GatewayTango extends Gateway {
@@ -26,14 +28,14 @@ public class GatewayTango extends Gateway {
 	}
 
 	@Override
-	public Resultado<Exception, Transacao> processa(
+	public Resultado<Exception, Transacao> processaEspecifico(
 			@NotNull @Valid Pagamento pagamento) {
 		requestsGateways.tangoProcessa(new DadosCompraGenerico(pagamento));
 		return Resultado.sucesso(Transacao.concluida(this));
 	}
 
 	@Override
-	public BigDecimal custo(@NotNull @Valid Pagamento pagamento) {
+	public BigDecimal custoEspecifico(@NotNull @Valid Pagamento pagamento) {
 		// isso aqui precisa ser definido pelo negócio
 		BigDecimal valor = pagamento.getValor().setScale(2,
 				RoundingMode.HALF_EVEN);

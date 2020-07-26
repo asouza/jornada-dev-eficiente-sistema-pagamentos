@@ -1,4 +1,4 @@
-package com.deveficiente.pagamentos.pagamentoonline;
+package com.deveficiente.pagamentos.pagamentoonline.gateways;
 
 import java.math.BigDecimal;
 
@@ -16,6 +16,8 @@ import com.deveficiente.pagamentos.outrossistemas.DadosCompraSeyaRequest;
 import com.deveficiente.pagamentos.pagamentooffline.DadosCartao;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
+import com.deveficiente.pagamentos.pagamentoonline.RequestsGateways;
+import com.deveficiente.pagamentos.pagamentoonline.Resultado;
 
 @Service
 public class GatewaySeya extends Gateway{
@@ -37,7 +39,7 @@ public class GatewaySeya extends Gateway{
 	}
 
 	@Override
-	public Resultado<Exception, Transacao> processa(
+	public Resultado<Exception, Transacao> processaEspecifico(
 			@NotNull @Valid Pagamento pagamento) {
 		log.debug("Processando pagamento por gateway Seya");
 		DadosCartao dadosCartao = pagamento.getDadosCartao();
@@ -48,7 +50,7 @@ public class GatewaySeya extends Gateway{
 	}
 
 	@Override
-	public BigDecimal custo(Pagamento pagamento) {
+	public BigDecimal custoEspecifico(Pagamento pagamento) {
 		return new BigDecimal("6");
 	}
 

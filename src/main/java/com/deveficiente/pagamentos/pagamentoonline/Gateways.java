@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
+import com.deveficiente.pagamentos.pagamentoonline.gateways.Gateway;
 
 //8
 @Service

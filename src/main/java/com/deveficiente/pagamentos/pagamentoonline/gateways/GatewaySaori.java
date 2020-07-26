@@ -1,4 +1,4 @@
-package com.deveficiente.pagamentos.pagamentoonline;
+package com.deveficiente.pagamentos.pagamentoonline.gateways;
 
 import java.math.BigDecimal;
 
@@ -14,6 +14,8 @@ import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.outrossistemas.DadosCompraGenerico;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
+import com.deveficiente.pagamentos.pagamentoonline.RequestsGateways;
+import com.deveficiente.pagamentos.pagamentoonline.Resultado;
 
 @Service
 public class GatewaySaori extends Gateway {
@@ -34,7 +36,7 @@ public class GatewaySaori extends Gateway {
 	}
 
 	@Override
-	public Resultado<Exception, Transacao> processa(
+	public Resultado<Exception, Transacao> processaEspecifico(
 			@NotNull @Valid Pagamento pagamento) {
 		
 		log.debug("Processando pagamento por gateway Saori");
@@ -44,7 +46,7 @@ public class GatewaySaori extends Gateway {
 	}
 
 	@Override
-	public BigDecimal custo(Pagamento pagamento) {
+	public BigDecimal custoEspecifico(Pagamento pagamento) {
 		return pagamento.getValor().multiply(new BigDecimal("0.05"));
 	}
 

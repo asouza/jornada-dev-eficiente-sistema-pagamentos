@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 import com.deveficiente.pagamentos.compartilhado.FacilitadorJackson;
-import com.deveficiente.pagamentos.pagamentoonline.Gateway;
-import com.deveficiente.pagamentos.pagamentoonline.GatewaySeya;
+import com.deveficiente.pagamentos.pagamentoonline.gateways.Gateway;
+import com.deveficiente.pagamentos.pagamentoonline.gateways.GatewaySeya;
 
 @Embeddable
 public class Transacao {
