@@ -13,28 +13,29 @@ import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.StatusTransacao;
 
 public class PagamentoTest {
-	
-	private Pagamento pagamento = new Pagamento(1l, BigDecimal.TEN,
+
+	private Pagamento pagamento = Pagamento.offline(1l, BigDecimal.TEN,
+			FormaPagamento.dinheiro,
 			new Usuario("teste@teste.com.br", FormaPagamento.dinheiro),
 			new Restaurante("teste", FormaPagamento.dinheiro),
-			StatusTransacao.esperando_confirmacao_pagamento);	
+			StatusTransacao.esperando_confirmacao_pagamento);
 
 	@Test
 	@DisplayName("deveria verificar que um pagamento ainda nao foi concluido")
-	void teste1()  {
+	void teste1() {
 		Assertions.assertFalse(pagamento.foiConcluido());
 	}
-	
+
 	@Test
 	@DisplayName("deveria verificar que um pagamento foi concluido")
-	void teste2()  {
+	void teste2() {
 		pagamento.conclui();
 		Assertions.assertTrue(pagamento.foiConcluido());
 	}
-	
+
 	@Test
 	@DisplayName("nao deveria deixar concluir uma compra mais de uma vez")
-	void teste3()  {
+	void teste3() {
 		pagamento.conclui();
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			pagamento.conclui();

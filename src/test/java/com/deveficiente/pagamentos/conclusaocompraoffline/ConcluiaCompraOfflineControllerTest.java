@@ -23,7 +23,8 @@ public class ConcluiaCompraOfflineControllerTest {
 			.mock(PagamentoRepository.class);
 	private ConcluiaCompraOfflineController controller = new ConcluiaCompraOfflineController(
 			pagamentoRepository);
-	private Pagamento pagamento = new Pagamento(1l, BigDecimal.TEN,
+	private Pagamento pagamento = Pagamento.offline(1l, BigDecimal.TEN,
+			FormaPagamento.dinheiro,
 			new Usuario("teste@teste.com.br", FormaPagamento.dinheiro),
 			new Restaurante("teste", FormaPagamento.dinheiro),
 			StatusTransacao.esperando_confirmacao_pagamento);
@@ -49,7 +50,7 @@ public class ConcluiaCompraOfflineControllerTest {
 		Mockito.when(pagamentoRepository.findByCodigo("1234567"))
 				.thenReturn(Optional.of(pagamento));
 
-		try {			
+		try {
 			controller.conclui("1234567");
 			Assertions.fail();
 		} catch (ResponseStatusException e) {
@@ -65,7 +66,7 @@ public class ConcluiaCompraOfflineControllerTest {
 				.thenReturn(Optional.of(pagamentoObservavel));
 
 		controller.conclui("12345678");
-		
+
 		Mockito.verify(pagamentoObservavel).conclui();
 	}
 }
