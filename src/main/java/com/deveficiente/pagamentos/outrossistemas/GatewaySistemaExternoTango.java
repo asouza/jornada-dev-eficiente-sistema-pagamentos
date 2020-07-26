@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GatewayTango implements PodeMeDeixarCaotico{
+public class GatewaySistemaExternoTango implements PodeMeDeixarCaotico{
 	
 	private static final Logger log = LoggerFactory
-			.getLogger(GatewayTango.class);
+			.getLogger(GatewaySistemaExternoTango.class);
 
 
 	@PostMapping(value = "/tango/processa")
-	public void processa(@RequestBody @Valid DadosCompraSaori request) {
+	public void processa(@RequestBody @Valid DadosCompraGenerico request) {
 		log.info("Processando pagamento gateway tango{}",request);
 	}
 }

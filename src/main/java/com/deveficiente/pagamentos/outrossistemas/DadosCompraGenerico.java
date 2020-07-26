@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 import com.deveficiente.pagamentos.pagamentooffline.DadosCartao;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 
-public class DadosCompraSaori {
+public class DadosCompraGenerico {
 
 	@CreditCardNumber
 	private String num_cartao;
@@ -24,7 +24,7 @@ public class DadosCompraSaori {
 	@NotNull
 	private BigDecimal valor_compra;
 
-	public DadosCompraSaori(@CreditCardNumber String num_cartao,
+	public DadosCompraGenerico(@CreditCardNumber String num_cartao,
 			@Min(100) @Max(999) int codigo_seguranca,
 			@Positive BigDecimal valor_compra) {
 		super();
@@ -33,7 +33,7 @@ public class DadosCompraSaori {
 		this.valor_compra = valor_compra;
 	}
 
-	public DadosCompraSaori(@NotNull @Valid Pagamento pagamento) {
+	public DadosCompraGenerico(@NotNull @Valid Pagamento pagamento) {
 		DadosCartao dadosCartao = pagamento.getDadosCartao();
 		this.codigo_seguranca = dadosCartao.getCodigoSeguranca();
 		this.num_cartao = dadosCartao.getNumero();

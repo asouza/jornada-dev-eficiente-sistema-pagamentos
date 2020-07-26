@@ -22,8 +22,8 @@ public class EndointsExternos {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 		
-		String[] valores = new String[]{"50.00", "150.00","60","200","1000","2000"};
-		int posicao = new Random().nextInt(6);
+		String[] valores = new String[]{"50.00","90","100","150.00","60","200","700","800","900","1000","2000"};
+		int posicao = new Random().nextInt(11);
 		
 		return Map.of("valor",new BigDecimal(valores[posicao])); 
 	}

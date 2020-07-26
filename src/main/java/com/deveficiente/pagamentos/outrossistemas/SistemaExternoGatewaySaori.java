@@ -16,7 +16,7 @@ public class SistemaExternoGatewaySaori implements PodeMeDeixarCaotico{
 
 
 	@PostMapping(value = "/saori/processa")
-	public void processa(@RequestBody @Valid DadosCompraSaori request) {
+	public void processa(@RequestBody @Valid DadosCompraGenerico request) {
 		log.info("Processando pagamento gateway saori {}",request);
 	}
 }

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.deveficiente.pagamentos.outrossistemas.DadosCartaoSeyaRequest;
-import com.deveficiente.pagamentos.outrossistemas.DadosCompraSaori;
+import com.deveficiente.pagamentos.outrossistemas.DadosCompraGenerico;
 import com.deveficiente.pagamentos.outrossistemas.DadosCompraSeyaRequest;
 
 @FeignClient(url = "${enderecos-externos.gateways.base-url}", name = "gateways")
@@ -19,6 +19,9 @@ public interface RequestsGateways {
 			DadosCompraSeyaRequest request);
 	
 	@PostMapping(value = "/saori/processa")
-	public void saoriProcessa(DadosCompraSaori request);	
+	public void saoriProcessa(DadosCompraGenerico request);
+	
+	@PostMapping(value = "/tango/processa")
+	public void tangoProcessa(DadosCompraGenerico request);	
 
 }

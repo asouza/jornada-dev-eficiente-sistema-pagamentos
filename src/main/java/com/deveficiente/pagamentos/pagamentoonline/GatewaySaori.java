@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
-import com.deveficiente.pagamentos.outrossistemas.DadosCompraSaori;
+import com.deveficiente.pagamentos.outrossistemas.DadosCompraGenerico;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
 
@@ -37,14 +37,14 @@ public class GatewaySaori implements Gateway {
 			@NotNull @Valid Pagamento pagamento) {
 		
 		log.debug("Processando pagamento por gateway Saori");
-		DadosCompraSaori request = new DadosCompraSaori(pagamento);
+		DadosCompraGenerico request = new DadosCompraGenerico(pagamento);
 		requestsGateways.saoriProcessa(request);
 		return Resultado.sucesso(Transacao.concluida(this));
 	}
 
 	@Override
 	public BigDecimal custo(Pagamento pagamento) {
-		return pagamento.getValor().multiply(new BigDecimal("0.01"));
+		return pagamento.getValor().multiply(new BigDecimal("0.05"));
 	}
 
 	@Override
