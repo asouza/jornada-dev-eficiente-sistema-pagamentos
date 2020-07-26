@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import org.springframework.util.Assert;
 
-import com.deveficiente.pagamentos.pagamentooffline.Transacao;
-
 /**
  * Indica o resultado de uma operação. Inspirado no Either do Scala.
  * @author albertoluizsouza

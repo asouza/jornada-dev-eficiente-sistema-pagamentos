@@ -1,6 +1,5 @@
 package com.deveficiente.pagamentos.listapagamentos;
 
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;

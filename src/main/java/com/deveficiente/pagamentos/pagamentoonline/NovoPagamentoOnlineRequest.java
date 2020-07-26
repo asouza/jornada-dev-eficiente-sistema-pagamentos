@@ -1,7 +1,6 @@
 package com.deveficiente.pagamentos.pagamentoonline;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;

@@ -2,7 +2,6 @@ package com.deveficiente.pagamentos.outrossistemas;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.validation.Valid;
 
