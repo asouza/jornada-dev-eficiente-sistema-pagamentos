@@ -36,6 +36,7 @@ public class IniciaPagamento {
 
 	public Pagamento executa(Long idPedido,
 			@Valid NovoPagamentoOnlineRequest request) throws BindException {
+		ForceSiteCall.fromExactlyPoint(NovoPagamentoOnlineController.class);
 		//1
 		BigDecimal valor = obtemValorPedido.executa(idPedido, () -> {
 			BindException bindException = new BindException("", "");
