@@ -14,6 +14,13 @@ import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 import com.deveficiente.pagamentos.pagamentooffline.ObtemValorPedido;
 import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 
+/**
+ * Esta classe é intimamente acoplada com o controller {@link NovoPagamentoOnlineController}.
+ * Ela só surgiu para que pudesse ser quebrada a carga intrínseca de lá
+ * de modo a facilitar o entendimento
+ * @author albertoluizsouza
+ *
+ */
 @Service
 //5
 public class IniciaPagamento {
