@@ -18,17 +18,19 @@ import com.deveficiente.pagamentos.pagamentooffline.Pagamento;
 import com.deveficiente.pagamentos.pagamentooffline.Transacao;
 
 @Service
-public class GatewaySeya implements Gateway{
+public class GatewaySeya extends Gateway{
 	
 	@Autowired
 	private RequestsGateways requestsGateways;
+	
+	private String id =  "gateway-seya";
 	
 	private static final Logger log = LoggerFactory
 			.getLogger(GatewaySeya.class);
 
 
 	@Override
-	public boolean aceita(@NotNull @Valid Pagamento pagamento) {
+	public boolean aceiteEspecifico(@NotNull @Valid Pagamento pagamento) {
 		FormaPagamento formaPagamento = pagamento.getFormaPagamento();
 		//aqui tem um perigo para o caso de novas formas
 		return formaPagamento.online;
@@ -49,5 +51,32 @@ public class GatewaySeya implements Gateway{
 	public BigDecimal custo(Pagamento pagamento) {
 		return new BigDecimal("6");
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GatewaySeya other = (GatewaySeya) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+	
+	
 
 }

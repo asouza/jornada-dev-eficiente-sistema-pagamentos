@@ -14,19 +14,24 @@ import com.deveficiente.pagamentos.pagamentooffline.Transacao;
  * @author albertoluizsouza
  *
  */
-public interface Gateway {
+public abstract class Gateway {
 
-	boolean aceita(@NotNull @Valid Pagamento pagamento);
+	public boolean aceita(@NotNull @Valid Pagamento pagamento) {
+		return !pagamento.foiConcluido() && aceiteEspecifico(pagamento);
+	}
 
-	Resultado<Exception,Transacao> processa(@NotNull @Valid Pagamento pagamento);
+	protected abstract boolean aceiteEspecifico(
+			@NotNull @Valid Pagamento pagamento);
+
+	public abstract Resultado<Exception,Transacao> processa(@NotNull @Valid Pagamento pagamento);
 	
 	@Override
-	boolean equals(Object obj);
+	public abstract boolean equals(Object obj);
 	
 	@Override
-	int hashCode();
+	public abstract int hashCode();
 
-	BigDecimal custo(@NotNull @Valid Pagamento pagamento);
+	public abstract BigDecimal custo(@NotNull @Valid Pagamento pagamento);
 	
 
 }
