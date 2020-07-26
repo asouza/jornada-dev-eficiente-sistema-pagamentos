@@ -91,6 +91,15 @@ public class NovoPagamentoOnlineController {
 			manager.persist(novoPagamento);
 			return novoPagamento;
 		});
+		
+		// aqui para baixo tem 8 pontos
+		
+		/*
+		 * versao 1 => diminuiria 8 pontos, considerando a referência ao gateway 
+		 * resultado = 7 pontos
+		 * Transacao novaTransacao = gateways.paga(novoPagamentoSalvo);
+		 * executaTransacao.executa(() -> pagamento.adicionaTransacao(novaTransacao));
+		 */
 
 //		//approach deixando claro no retorno que as coisas podem dar erradas
 		List<Gateway> gatewaysOrdenados = gateways.stream()
