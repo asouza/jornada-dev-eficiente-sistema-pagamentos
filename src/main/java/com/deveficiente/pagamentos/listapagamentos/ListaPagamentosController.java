@@ -23,6 +23,7 @@ import com.deveficiente.pagamentos.modeladominio.Usuario;
 import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 
 @RestController
+//10
 public class ListaPagamentosController {
 
 	@PersistenceContext
@@ -31,6 +32,7 @@ public class ListaPagamentosController {
 	// 1
 	private Collection<RegraFraude> regrasFraude;
 	@Autowired
+	//1
 	private ExecutaTransacao executaTransacao;
 	@Value("${cache.usuario-seleciona-restaurante.quantidade}")
 	private int nVezes;
@@ -64,6 +66,7 @@ public class ListaPagamentosController {
 		List<DetalheFormaPagamento> detalhes = formasPagamento.stream()
 				.map(DetalheFormaPagamento::new).collect(Collectors.toList());
 
+		//1
 		if (usuario.selecionou(restaurante, nVezes)) {
 			return ResponseEntity.ok()
 					.header("Expires",
