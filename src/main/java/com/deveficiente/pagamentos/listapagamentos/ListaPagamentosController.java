@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
+import com.deveficiente.pagamentos.modeladominio.CombinacaoUsuarioRestaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
+import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 
 @RestController
 //10
@@ -27,31 +29,33 @@ public class ListaPagamentosController {
 	@Autowired
 	// 1
 	private Collection<RegraFraude> regrasFraude;
+	//1
 	@Autowired
-	private CacheListagem cacheListagem;
+	private CacheListaFormasPagamento cacheListagem;
+	@Autowired
+	//1
+	private ExecutaTransacao executaTransacao;
+	@Autowired
+	private SelecionaFormasPagamento selecionaFormasPagamento;	
 
 	@GetMapping(value = "/pagamentos")
 	// 1
-	public ResponseEntity<List<DetalheFormaPagamento>> lista(
+	public ResponseEntity<Collection<DetalheFormaPagamento>> lista(
 			// 1
 			@Valid FiltraFormasPagamentoRequest request) {
-
-		// 1
-		Usuario usuario = manager.find(Usuario.class, request.getIdUsuario());
-		// 1
-		Restaurante restaurante = manager.find(Restaurante.class,
-				request.getIdRestaurante());
-
-		// 1
-		Set<FormaPagamento> formasPagamento = usuario
-				.filtraFormasPagamento(restaurante, regrasFraude);
+		
+		//1
+		CombinacaoUsuarioRestaurante combinacao = request.toModel(manager);
 		
 		// 1
-		List<DetalheFormaPagamento> detalhes = formasPagamento.stream()
-				.map(DetalheFormaPagamento::new).collect(Collectors.toList());		
-				
-		
-		return cacheListagem.executa(detalhes,usuario,restaurante);
+		executaTransacao.executa(() -> {
+			manager.persist(combinacao);
+			return null;
+		});
+						
+		return cacheListagem.executa(combinacao,(combinacaoUtilizada) -> {
+			return selecionaFormasPagamento.executa(combinacaoUtilizada);			
+		});
 	}
 
 }

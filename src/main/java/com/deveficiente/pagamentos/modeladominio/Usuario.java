@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,8 +39,6 @@ public class Usuario {
 	@ElementCollection
 	// 1
 	private Set<FormaPagamento> formasPagamento = new HashSet<>();
-	@OneToMany(mappedBy = "usuario",cascade = CascadeType.MERGE)
-	private List<RestauranteSelecionado> selecoes = new ArrayList<>();
 
 	@Deprecated
 	public Usuario() {
@@ -84,22 +83,8 @@ public class Usuario {
 				.contains(formaPagamento);
 	}
 
-	public void registraSelecao(Restaurante restaurante) {
-		this.selecoes.add(new RestauranteSelecionado(this,restaurante));
-	}
-
-	/**
-	 * 
-	 * @param restaurante
-	 * @param nVezes numero de vezes que devemos comparar a quantidade de selecoes
-	 * @return true se selecionou n ou mais vezes aquele restaurante
-	 */
-	public boolean selecionou(Restaurante restaurante, int nVezes) {
-		long numeroSelecoes = selecoes.stream()				
-				.filter(selecao -> selecao.mesmoRestaurante(restaurante))				
-				.count();
-		
-		return numeroSelecoes >= nVezes;
+	public Optional<Long> getId() {
+		return Optional.ofNullable(id);
 	}
 
 }

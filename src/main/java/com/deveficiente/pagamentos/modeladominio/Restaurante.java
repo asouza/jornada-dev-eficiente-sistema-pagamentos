@@ -1,6 +1,7 @@
 package com.deveficiente.pagamentos.modeladominio;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -61,6 +62,10 @@ public class Restaurante {
 		} else if (!nome.equals(other.nome))
 			return false;
 		return true;
+	}
+
+	public Optional<Long> getId() {
+		return Optional.ofNullable(id);
 	}
 	
 	
