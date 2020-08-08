@@ -26,9 +26,6 @@ public class ListaPagamentosController {
 
 	@PersistenceContext
 	private EntityManager manager;
-	@Autowired
-	// 1
-	private Collection<RegraFraude> regrasFraude;
 	//1
 	@Autowired
 	private CacheListaFormasPagamento cacheListagem;
