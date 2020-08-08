@@ -1,7 +1,5 @@
 package com.deveficiente.pagamentos.listapagamentos;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
-import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 
 @RestController
 //10
@@ -32,12 +28,7 @@ public class ListaPagamentosController {
 	// 1
 	private Collection<RegraFraude> regrasFraude;
 	@Autowired
-	//1
-	private ExecutaTransacao executaTransacao;
-	@Value("${cache.usuario-seleciona-restaurante.quantidade}")
-	private int nVezes;
-	@Value("${cache.usuario-seleciona-restaurante.tempo-expiracao}")
-	private int tempoExpiracao;
+	private CacheListagem cacheListagem;
 
 	@GetMapping(value = "/pagamentos")
 	// 1
@@ -52,29 +43,15 @@ public class ListaPagamentosController {
 				request.getIdRestaurante());
 
 		// 1
-		executaTransacao.executa(() -> {
-			usuario.registraSelecao(restaurante);
-			manager.merge(usuario);
-			return null;
-		});
-
-		// 1
 		Set<FormaPagamento> formasPagamento = usuario
 				.filtraFormasPagamento(restaurante, regrasFraude);
-
+		
 		// 1
 		List<DetalheFormaPagamento> detalhes = formasPagamento.stream()
-				.map(DetalheFormaPagamento::new).collect(Collectors.toList());
-
-		//1
-		if (usuario.selecionou(restaurante, nVezes)) {
-			return ResponseEntity.ok()
-					.header("Expires",
-							LocalDateTime.now().plusSeconds(tempoExpiracao)
-									.format(DateTimeFormatter.ISO_DATE_TIME))
-					.body(detalhes);
-		}
-		return ResponseEntity.ok(detalhes);
+				.map(DetalheFormaPagamento::new).collect(Collectors.toList());		
+				
+		
+		return cacheListagem.executa(detalhes,usuario,restaurante);
 	}
 
 }
