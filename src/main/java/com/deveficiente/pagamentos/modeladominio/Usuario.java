@@ -99,7 +99,6 @@ public class Usuario {
 				.filter(selecao -> selecao.mesmoRestaurante(restaurante))				
 				.count();
 		
-		System.out.println(numeroSelecoes + "-" +nVezes);
 		return numeroSelecoes >= nVezes;
 	}
 
