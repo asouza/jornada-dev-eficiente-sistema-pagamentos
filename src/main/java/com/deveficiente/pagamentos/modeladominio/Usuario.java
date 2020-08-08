@@ -1,7 +1,9 @@
 package com.deveficiente.pagamentos.modeladominio;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +36,8 @@ public class Usuario {
 	@ElementCollection
 	// 1
 	private Set<FormaPagamento> formasPagamento = new HashSet<>();
+	@ElementCollection
+	private List<Restaurante> selecoes = new ArrayList<>();
 
 	@Deprecated
 	public Usuario() {
@@ -76,6 +80,10 @@ public class Usuario {
 			Collection<RegraFraude> regrasFraude) {
 		return filtraFormasPagamento(restaurante, regrasFraude)
 				.contains(formaPagamento);
+	}
+
+	public void registraSelecao(Restaurante restaurante) {
+		this.selecoes.add(restaurante);
 	}
 
 }

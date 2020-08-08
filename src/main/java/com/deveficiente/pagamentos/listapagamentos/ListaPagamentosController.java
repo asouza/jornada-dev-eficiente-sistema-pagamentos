@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deveficiente.pagamentos.modeladominio.FormaPagamento;
 import com.deveficiente.pagamentos.modeladominio.Restaurante;
 import com.deveficiente.pagamentos.modeladominio.Usuario;
+import com.deveficiente.pagamentos.pagamentooffline.ExecutaTransacao;
 
 @RestController
 public class ListaPagamentosController {
@@ -25,6 +26,8 @@ public class ListaPagamentosController {
 	@Autowired
 	//1
 	private Collection<RegraFraude> regrasFraude;
+	@Autowired
+	private ExecutaTransacao executaTransacao;
 
 	@GetMapping(value = "/pagamentos")
 	//1
@@ -37,6 +40,12 @@ public class ListaPagamentosController {
 		//1
 		Restaurante restaurante = manager.find(Restaurante.class,
 				request.getIdRestaurante());
+		
+		//1
+		executaTransacao.executa(() -> {
+			usuario.registraSelecao(restaurante);
+			return null;
+		});
 
 		//1
 		Set<FormaPagamento> formasPagamento = usuario
