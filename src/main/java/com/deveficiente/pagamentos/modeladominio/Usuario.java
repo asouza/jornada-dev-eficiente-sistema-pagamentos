@@ -8,11 +8,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -36,8 +38,8 @@ public class Usuario {
 	@ElementCollection
 	// 1
 	private Set<FormaPagamento> formasPagamento = new HashSet<>();
-	@ElementCollection
-	private List<Restaurante> selecoes = new ArrayList<>();
+	@OneToMany(mappedBy = "usuario",cascade = CascadeType.MERGE)
+	private List<RestauranteSelecionado> selecoes = new ArrayList<>();
 
 	@Deprecated
 	public Usuario() {
@@ -83,7 +85,22 @@ public class Usuario {
 	}
 
 	public void registraSelecao(Restaurante restaurante) {
-		this.selecoes.add(restaurante);
+		this.selecoes.add(new RestauranteSelecionado(this,restaurante));
+	}
+
+	/**
+	 * 
+	 * @param restaurante
+	 * @param nVezes numero de vezes que devemos comparar a quantidade de selecoes
+	 * @return true se selecionou n ou mais vezes aquele restaurante
+	 */
+	public boolean selecionou(Restaurante restaurante, int nVezes) {
+		long numeroSelecoes = selecoes.stream()				
+				.filter(selecao -> selecao.mesmoRestaurante(restaurante))				
+				.count();
+		
+		System.out.println(numeroSelecoes + "-" +nVezes);
+		return numeroSelecoes >= nVezes;
 	}
 
 }
