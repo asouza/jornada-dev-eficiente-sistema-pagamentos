@@ -25,24 +25,37 @@ import com.deveficiente.pagamentos.pagamentoonline.ForceSiteCall;
 //4
 public class CacheListaFormasPagamento {
 
-	@Value("${cache.usuario-seleciona-restaurante.quantidade}")
 	private int nVezes;
-	@Value("${cache.usuario-seleciona-restaurante.tempo-expiracao}")
 	private int tempoExpiracao;
-	@Autowired
-	//1
-	private CombinacaoUsuarioRestauranteRepository combinacaoUsuarioRestauranteRepository;
+	// 1
+	private ContaSelecaoUsuarioRestaurante selecoes;
 
-	//1
+	/**
+	 * 
+	 * @param nVezes numero de vezes que a combinacao deve ser selecionada
+	 * @param tempoExpiracao tempo em segundos
+	 * @param selecoes alguma implementacao que possamos buscar selecoes passadas. Olhe para {@link CombinacaoUsuarioRestauranteRepository}
+	 */
+	public CacheListaFormasPagamento(
+			@Value("${cache.usuario-seleciona-restaurante.quantidade}") int nVezes,
+			@Value("${cache.usuario-seleciona-restaurante.tempo-expiracao}") int tempoExpiracao,
+			ContaSelecaoUsuarioRestaurante selecoes) {
+		super();
+		this.nVezes = nVezes;
+		this.tempoExpiracao = tempoExpiracao;
+		this.selecoes = selecoes;
+	}
+
+	// 1
 	public ResponseEntity<Collection<DetalheFormaPagamento>> executa(
-			//1
+			// 1
 			CombinacaoUsuarioRestaurante combinacao,
 			Function<CombinacaoUsuarioRestaurante, Collection<DetalheFormaPagamento>> filtraFormasPagamento) {
 
 		Collection<DetalheFormaPagamento> detalhes = filtraFormasPagamento
 				.apply(combinacao);
 		// 1
-		long numeroSelecao = combinacao.contaNumeroUsos(combinacaoUsuarioRestauranteRepository);
+		long numeroSelecao = combinacao.contaNumeroUsos(selecoes);
 		if (numeroSelecao >= nVezes) {
 			return ResponseEntity.ok()
 					.header("Expires",
