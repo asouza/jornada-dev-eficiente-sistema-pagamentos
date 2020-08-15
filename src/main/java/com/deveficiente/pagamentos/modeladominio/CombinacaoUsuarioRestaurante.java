@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.util.Assert;
 
 import com.deveficiente.pagamentos.listapagamentos.CombinacaoUsuarioRestauranteRepository;
+import com.deveficiente.pagamentos.listapagamentos.ContaSelecaoUsuarioRestaurante;
 import com.deveficiente.pagamentos.listapagamentos.RegraFraude;
 
 @Entity
@@ -64,12 +65,10 @@ public class CombinacaoUsuarioRestaurante {
 		return restaurante.getId().get();
 	}
 
-	public long contaNumeroUsos(
-			CombinacaoUsuarioRestauranteRepository combinacaoUsuarioRestauranteRepository) {
+	public long contaNumeroUsos(ContaSelecaoUsuarioRestaurante selecoes) {
 
-		return combinacaoUsuarioRestauranteRepository
-				.contaSelecaoUsuarioRestaurante(getUsuarioId(),
-						getRestauranteId());
+		return selecoes.contaSelecaoUsuarioRestaurante(getUsuarioId(),
+				getRestauranteId());
 	}
 
 }
