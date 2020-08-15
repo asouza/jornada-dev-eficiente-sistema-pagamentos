@@ -42,9 +42,8 @@ public class CacheListaFormasPagamento {
 		Collection<DetalheFormaPagamento> detalhes = filtraFormasPagamento
 				.apply(combinacao);
 		// 1
-		if (combinacaoUsuarioRestauranteRepository
-				.contaSelecaoUsuarioRestaurante(combinacao.getUsuarioId(),
-						combinacao.getRestauranteId()) >= nVezes) {
+		long numeroSelecao = combinacao.contaNumeroUsos(combinacaoUsuarioRestauranteRepository);
+		if (numeroSelecao >= nVezes) {
 			return ResponseEntity.ok()
 					.header("Expires",
 							LocalDateTime.now().plusSeconds(tempoExpiracao)

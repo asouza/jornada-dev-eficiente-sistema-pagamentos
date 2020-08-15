@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.util.Assert;
 
+import com.deveficiente.pagamentos.listapagamentos.CombinacaoUsuarioRestauranteRepository;
 import com.deveficiente.pagamentos.listapagamentos.RegraFraude;
 
 @Entity
@@ -30,7 +31,7 @@ public class CombinacaoUsuarioRestaurante {
 	@Valid
 	@ManyToOne
 	private Restaurante restaurante;
-	
+
 	@Deprecated
 	public CombinacaoUsuarioRestaurante() {
 
@@ -51,14 +52,24 @@ public class CombinacaoUsuarioRestaurante {
 		return usuario.filtraFormasPagamento(restaurante, regrasFraude);
 	}
 
-	public Long getUsuarioId() {
-		Assert.isTrue(usuario.getId().isPresent(),"Neste ponto o usuario precisa de id");
+	private Long getUsuarioId() {
+		Assert.isTrue(usuario.getId().isPresent(),
+				"Neste ponto o usuario precisa de id");
 		return usuario.getId().get();
 	}
 
-	public Long getRestauranteId() {
-		Assert.isTrue(restaurante.getId().isPresent(),"Neste ponto o restaurante precisa de id");
+	private Long getRestauranteId() {
+		Assert.isTrue(restaurante.getId().isPresent(),
+				"Neste ponto o restaurante precisa de id");
 		return restaurante.getId().get();
+	}
+
+	public long contaNumeroUsos(
+			CombinacaoUsuarioRestauranteRepository combinacaoUsuarioRestauranteRepository) {
+
+		return combinacaoUsuarioRestauranteRepository
+				.contaSelecaoUsuarioRestaurante(getUsuarioId(),
+						getRestauranteId());
 	}
 
 }
